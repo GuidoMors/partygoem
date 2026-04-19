@@ -1,0 +1,388 @@
+:root {
+  --themegreen:rgb(94, 255, 0);
+  --themegreenneon: rgb(94, 255, 0);
+  --themesubgreen:rgb(67, 155, 17);
+  --themeblack:rgb(1, 4, 1);
+  --themegrey: rgb(18, 19, 18);
+  --themedisabled: rgb(44, 49, 119);
+  --themewhite:rgb(248, 244, 241);
+  --themelog:rgb(5, 7, 5);
+  --colorneon: rgb(165, 255, 113);
+}
+
+@font-face {
+  font-family: 'bigfont';
+  src: url(../fonts/Arcade.ttf);
+}
+
+@font-face {
+  font-family: 'smallfont';
+  src: url(../fonts/BalsamiqSans-Regular.ttf);
+}
+
+body {
+  font-family: 'smallfont';
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: fixed;
+  width: 100%;
+}
+
+input {
+  background-color: transparent;
+  border-radius: 5px;
+  font-family: 'smallfont';
+  z-index: 200;
+  color: white;
+}
+
+option {
+  background: var(--themeblack);
+  color: white;
+  border: 1px var(--themegreen) solid;
+}
+
+button, select {
+  font-family: 'smallfont';
+  background-color: transparent;
+  color: var(--themegreen);
+  -moz-appearance: none;
+  text-overflow: hidden;
+}
+
+.neonwhite {
+  color: white;
+  text-shadow: 0 0 0.125em hsl( 0 0% 100%/ 0.5),
+  0 0 0.45em white;
+}
+
+.neonwhite.neonbutton:hover{
+  background: white !important;
+}
+
+.neonwhite:before{
+  background: white;
+}
+
+.neonwhite.neonborder {
+  box-shadow: 0 0 1em 0 white, inset 0 0 1em 0 white;
+  border: 4px white solid;
+}
+
+.neonwhite.neonborder::after {
+  box-shadow: 0 0 2em 1em white;
+}
+
+.neonwhite.neonborder::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-shadow: 0 0 2em 1em white;
+  opacity: 0;
+  border-radius: 100px;
+  z-index: -1;
+}
+
+.neongreen.neonbutton:hover{
+  background: var(--themegreenneon) !important;
+}
+
+.neongreen.neonborder::after {
+  box-shadow: 0 0 2em 1em var(--themegreenneon), inset 0 0 2em 1em var(--themegreenneon);
+}
+
+.neongreen.neonborder {
+  box-shadow: 0 0 1em 0 var(--themegreenneon), inset 0 0 1em 0 var(--themegreenneon);
+  border: 4px var(--themegreenneon) solid;
+}
+
+.neongreen {
+  color: var(--themegreenneon);
+  text-shadow: 0 0 0.125em hsl( 0 0% 100%/ 0.5),
+  0 0 0.45em var(--themegreenneon);
+}
+
+.neongreen::before{
+  background: var(--themegreenneon);
+  
+}
+
+.neonborder {
+  border-radius: 20px;
+}
+
+.neonbutton:hover{
+  color: var(--themeblack);
+  text-shadow: none;
+}
+
+.neonborder::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  transform: perspective(2em) rotateX(40deg) scale(0.75, 0.33);
+  filter: blur(0.9em);
+  opacity: 0.7;
+}
+
+.neonbutton:hover::after{
+  opacity: 0.5;
+}
+
+.neonborder::after{
+  opacity: 0;
+  border-radius: 25px;
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.BigButton {
+  border: 3px var(--themegreen) solid;
+  color: var(--themegreen) ;
+  background-color:transparent;
+  font-size: 12px;
+}
+
+ul{
+  padding-left:27px;
+}
+
+ul ul{
+  padding-left:27px;
+}
+
+/*
+FIELDS
+*/
+
+body {
+  background-color: var(--themeblack);
+}
+
+#board {
+  float:left;  
+  width:100%; 
+  height: 100%;
+  justify-content: center;
+  margin-top: -100px;
+}
+
+#left {
+  position: absolute;
+  top: 50%;
+  margin-top: -200px;
+  height: fit-content;
+  margin-left:3%;
+  width:200px;
+  left: 0;
+}
+
+@media (max-width: 1200px) {
+  #left {
+    bottom: 100px;
+    top: unset;
+    margin-top: 200px;
+    left: 50%;
+    margin-left: -100px;
+  }
+
+  .qrDiv {
+    top:30 !important;
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 50px !important;
+    min-height: 50px !important;
+  }
+}
+
+#right {
+  float:right; 
+  width: 325px; 
+  height:99%; 
+  background-color: var(--themelog);
+  border-radius: 0px;
+  position: absolute;
+  right: -320px;
+  z-index: 1200;
+  transition: right 0.5s ease-out;
+  border-left: 1px var(--themegreen) solid;
+  box-sizing: border-box;
+  height: 100%;
+}
+
+#right.open{
+  right:0;
+}
+
+#middle {
+  float:left;  
+  width:60%; 
+  height:100%; 
+  justify-content: center;
+}
+
+.gamelogo{
+	height: 9%;
+	margin: 0 auto;	
+  margin-top: 75px;
+  margin-bottom: 4%;
+	width: fit-content;
+	width: -moz-fit-content;
+  font-size: 14.7vw;
+  font-family: 'bigfont';
+  text-align: left;
+  color: var(--themegreen);
+  line-height: 50%;
+  padding-left: 1%; 
+}
+
+
+.gamelogo img {
+  height: 100%;
+  width: 100%;
+}
+
+.lobbyDiv {
+  height: 75%;
+  width: 60%;
+  margin-left:20%;
+  background-color: transparent;
+  color: white;
+  border-radius: 5px;
+}
+
+@media (max-width: 1200px) {
+  .lobbyDiv {
+    height: 75%;
+    width: 90%;
+    margin-left:5%;
+    background-color: transparent;
+    color: white;
+    border-radius: 5px;
+  }
+}
+
+.locksymbol {
+  width: 2.5% !important;
+  height: 3% !important;
+
+  margin: 0 !important;
+  margin-top: 2% !important;
+  margin-left: 1% !important;
+  float:left;
+  background-color: transparent !important;
+  
+  background-size: 100% 100%;
+  image-rendering: -webkit-optimize-contrast;
+}
+
+.locked {
+  background-image: url("../images/menu/locked.png");
+}
+
+.loginDiv {
+  display: inline-block;
+  width: 100%;
+  height: 200px;
+  position: relative;
+}
+
+.loginButton{
+  position: absolute;
+  float: left;
+  margin-left: 40%;
+  margin-top: 5%;
+  width: 20%;
+  height: 65px;
+	font-size: 22px;
+  min-width: 100px;
+  left: 0;
+  top: 75px;
+}
+
+.signupButton{
+  position: absolute;
+  float:right;
+  margin-right: 20%;
+  margin-top: 5%;
+  width: 20%;
+  height: 65px;
+	font-size: 22px;
+  min-width: 100px;
+  right: 0;
+  top: 75px;
+}
+
+.userNameField {
+  float: left;
+  margin-top: 25px;
+  margin-left: 20%;
+  width: 20%;
+  height: 50px;
+  font-size: 18px;
+  background-color:transparent;
+  color: white;
+  padding-left: 2%;
+  min-width: 100px;
+  position:absolute;
+}
+
+.userPwField {
+  float: right;
+  margin-top: 25px;
+  margin-right: 20%;
+  width: 20%;
+  height: 50px;
+  font-size: 18px;
+  background-color:transparent;
+  color: white;
+  padding-left: 2%;
+  min-width: 100px;
+}
+
+.startGameButton {
+  display: none;
+}
+
+.qrDiv{
+  position: relative;
+  top:75px;
+  display:flex;
+  margin-top: 5vw;
+  color: white;
+  min-width: 200px;
+  min-height: 200px;
+  height: 10vw;
+  width: 10vw;
+  margin: 0 auto;
+  border-radius: 5px;
+  margin-top: 50px;
+  border-width: 12px;
+}
+
+.bigfont {
+  font-family: 'bigfont';
+}
+
+.failDiv {
+  color: white;
+  width: 60%;
+  margin: 0 auto;
+  position: absolute;
+  left: 20%;
+  margin-top: 4%;
+}

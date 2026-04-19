@@ -1,0 +1,513 @@
+:root {
+	--themeblack:rgb(88, 86, 86);
+	--themesubblack:rgb(60, 60, 60);
+	--themewhite: rgb(220, 220, 220);
+	--themesubwhite: rgb(175, 175, 190);
+
+	--teamone:rgb(80, 80, 80);
+	--teamtwo: rgb(90, 90, 90);
+  }
+
+  button, select {
+	border: 1px var(--themewhite) solid;
+	color: var(--themewhite);
+  }
+  
+  .BigButton {
+	background-color: var(--themesubwhite);
+	border: 1px var(--themewhite) solid;
+	color: white;
+  }
+  
+  button:disabled, select:disabled, button:disabled:hover {
+	background-color: var(--themedisabled);
+  }
+  
+  button:hover, select:hover {
+	background-color: var(--themewhite);
+
+  }
+  
+
+/**
+* LOBBY
+**/
+
+body {
+	background-color: var(--themeblack);
+	margin: 0;
+  }
+
+.lobbyDiv {
+	background-color: var(--themeblack);
+	height: 80%;
+	z-index: 999;
+	border-radius: 10px;
+	position: absolute;
+    top: 17%;
+}
+
+#right {
+	background-color: var(--themeblack);
+	z-index:1200;
+	border-left: 1px white solid;
+}
+
+#middle {
+	float:left;  
+	width: 100%; 
+	height:100%; 
+	z-index: 999;
+	position: relative;
+}
+
+.qrDiv {
+	position: absolute;
+	left:40px;
+	top:50px;
+	margin-top: 0;
+}
+
+.themeRed {
+	background-color: var(--teamone);
+	color: var(--white);
+}
+
+.themeBlue {
+	background-color: var(--teamtwo);
+	color: var(--white);
+}
+
+.genericMenuDiv {
+    padding-right: 8px;
+    padding-top: 8px;
+    height: 3%;
+    padding-left: 8px;
+}
+
+#swapTabButton {
+	background-image: url(../../common/images/menu/turnwhite.png);
+	background-size: 13% 90%;
+	background-repeat: no-repeat;
+	background-position: center;
+	display: none;
+	float: left;
+}
+
+#swapTabButton:hover {
+	background-image: url(../../common/images/menu/turn.png);
+}
+
+.chevronContainer {
+	background-color: var(--themeblack);
+	border-left: 1px white solid;
+}
+  
+#chevron {
+	color: var(--themeblack);
+	-webkit-text-stroke: 1px white;
+}
+
+.typeBox {
+	border-top: solid white 1px;
+}
+
+.gameLog {
+    background-color: var(--themeblack) !important;
+    float: right;
+    margin-right: 2.5%;
+    width: 95%;
+    margin-left: 2.5%;
+    color: var(--themewhite) !important;
+}
+
+.recipeLog {
+	background-color: var(--themeblack) !important;
+	float: right;
+	margin-right: 2.5%;
+	width: 97.5%;
+	height: 97%;
+	display: none;
+	overflow-y: scroll;
+	-ms-overflow-style: none;
+  	scrollbar-width: none;
+}
+
+.recipeLog::-webkit-scrollbar {
+	display: none;
+  }
+
+.typeBox {
+	margin-top: 0px;
+	margin-right: 2.5%;
+	width: 97.5%;
+}
+
+.gameLogo {
+	height: 9%;
+    margin: 0 auto;
+    width: fit-content;
+	font-family: 'bigfont';
+	color: var(--themewhite);
+	background-color: var(--themeblack);
+	text-align: center;
+	position:relative;
+	display: flex;
+    align-items: flex-end;
+	height:15%;
+	padding: 0;
+	margin-top: 2%;
+}
+
+.gameLogo img{
+	width: auto;
+	height: 90%;
+	margin: 0 auto;
+}
+
+.gamelog p:nth-child(odd) {
+	background-color: var(--themesubblack);
+}
+
+.playerPicsContainer{
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 100%;
+    width: 100%;
+	position:relative;
+}
+
+.playerPicsLobby{
+	width: fit-content;
+	height: 45%;
+	color:black;
+    position: absolute;
+	bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(100, 1fr);
+}
+
+.customImageDisplay {
+	display:block;
+	float:left;
+	margin-top: 2px;
+	margin-left:4px;
+	margin-right:4px;
+	height: 100px;
+	width: 80px;
+	top: -50px;
+    position: relative;
+}
+
+@media (max-width: 1200px) {
+}
+
+.customImageDisplayDraft {
+	position:relative;
+	display:block;
+	float:left;
+	width:100%;
+	height:90%;
+	margin-top: 7%;
+}
+.customImagePart {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	max-width: 150px;
+	margin: 0 auto;
+}
+
+
+.myPlayerNameTag{
+	font-family:'smallfont';
+	font-weight: bold;
+	text-align:center;
+	position:absolute;
+	bottom:0;
+	margin:0 auto;
+	margin-bottom: 5%;
+	margin-right: 15%;
+	width: 85%;
+}
+
+.playerNameTag{
+	font-family:'smallfont';
+	font-weight: bold;
+	text-align:center;
+	position: relative;
+	float: left;
+	overflow: hidden;
+  	text-overflow: ellipsis;
+	width: 100% !important;
+}
+
+.playerNameTag:hover{
+	color: white;
+	overflow:visible;
+}
+
+.characterSelectionDivLeft{
+	position:relative;
+	float:left;
+	width: 0%;
+	height: 100%;
+}
+
+.characterSelectionDivMiddle{
+	position:absolute;
+	float:left;
+	height: 100%;
+	width:100%;
+	
+}
+
+.characterSelectionDivRight{
+	position:relative;
+	float:left;
+	width: 0%;
+	height: 100%;
+	
+}
+
+.joinGameButton{
+	float: none;
+    display: block;
+    margin-left: -75px;
+    width: 150px;
+    height: 10%;
+    margin-top: 2%;
+    position: absolute;
+    top: 5%;
+	font-family: 'bigfont';
+	font-size: 45px;
+	left:50%;
+	min-height: 40px;
+	z-index:200;
+}
+
+.joinGameButton:hover{
+	color:var(--themeblack);
+}
+
+.editCharacterButton{
+	position: absolute;
+    float: none;
+    display: block;
+    height: 40%;
+    top: 5%;
+    width: 100%;
+    background-color: var(--themesubblack);
+}
+
+.startGameButton{
+	display: block;
+	position: absolute;
+    height: 50px;
+    width: 200px;
+    bottom: 5.2%;
+    left: 50%;
+	margin-left:-100px;
+	color: white;
+	font-size: 35px;
+	font-family: 'bigfont';
+}
+
+.characterSelection{
+	position: absolute;
+    bottom: 15%;
+	left:50%;
+	margin-left: -50px;
+    width: 100px;
+    height: 100px;
+    border-radius: 25px;
+    background-color: var(--themesubblack);
+}
+
+.customPickerLeft {
+	float: left;
+	width: 80%;
+	height: 80%;
+	margin-top: 10%;
+	margin-left: 10%;
+	-webkit-appearance: none;
+	border: 1px black solid;
+	border-radius: 5px;
+	color: black;
+	border-color: black;
+	background-color: black;
+}
+
+.customPickerLeft::-webkit-color-swatch-wrapper {
+	padding: 0;
+}
+.customPickerLeft::-webkit-color-swatch {
+	border: none;
+}
+
+.colorpickercheckbox {
+	width:15%;
+	height: 18%;
+	margin-left: 7%;
+	float: left;
+	margin-top: 27%;
+}
+
+
+.customImageButtonRight {
+	position:relative;
+	display:block;
+	float:left;
+	width: 20%;
+	margin-left: 10%;
+	margin-top: 15%;
+	height: 40%;
+}
+
+.customImageButtonLeft {
+	position:relative;
+	display:block;
+	float:left;
+	width: 20%;
+	margin-left: 20%;
+	margin-top: 15%;
+	height: 40%;
+}
+
+.characterSelectionDivSeperator {
+	height: 33%;
+}
+
+.characterCanvas {
+	float:left;
+	width: 100%;
+	height: 100%;
+  }
+
+.characterCanvasDraft {
+	float:left;
+	width: 100%;
+	margin-left:-7%;
+	height: 100%;
+  }
+
+
+.teamblock {
+	position: relative;
+	height:65%;
+	float:left;
+	overflow:hidden;
+	display: grid;
+    place-items: center;
+}
+
+.teamChoosingButton {
+	margin-top: 5%;
+	width: 55%;
+	height: 40%;
+	font-size: 66%;
+	position: absolute;
+	left: -5%;
+	top: 45%;
+	font-size: 0.65rem;
+	background-color: var(--themesubblack);
+}
+
+#moreTeamsButton{
+	left: 52.5%;
+}
+
+.controllerSwitcherDiv {
+    position: absolute;
+    margin: 0 auto;
+    margin-top: 5px;
+    word-wrap: break-word;
+    width: 100px;
+    color: black;
+    font-size: 13px;
+    text-align: center;
+    left: 5%;
+	bottom: 15%;
+	z-index: 2000;
+}
+
+.controllerSwitcherDiv p {
+	margin: 0;
+	pointer-events: none;
+	color: white;
+	user-select: none;
+}
+
+.controllerSwitcherButton {
+	width: 50px;
+	height: 50px;
+	background-color: var(--themesubyellow);
+	border-radius: 5px;
+	border: 1px black solid;
+	z-index: 1500;
+}
+
+.controllerSwitcherDiv.inGameLog {
+	left: unset;
+	top: unset;
+	right: 50%;
+	margin-right: -75px;
+	bottom: 0;
+	transform:translate(0%,-15%);
+}
+
+#deviceController {
+	display: none;
+	vertical-align: middle;
+	width: 100vw;
+	height: 100vh;
+	background-color: var(--themedisabled);
+	z-index: 2000;
+	position: absolute;
+	left:50vw;
+	top:50vh;
+	transform: translate(-50vw,-50vh);
+  }
+  
+
+.buttoncontainer {
+	position: absolute;
+	top:40%;
+	left:50%;
+	transform: translate(-50%, -50%); 
+	display: grid;
+	gap: 10px;
+	grid-template-columns: repeat(3, 1fr);
+	width:60%
+}
+
+.buttoncontainer button {
+	border-radius: 25px;
+	border-color: black;
+	background-color: var(--themewhite);
+	border: solid black 5px;
+	box-sizing: border-box;
+	color: black;
+	font-size: 10vw;
+	min-width:50px;
+	max-width:250px;
+	text-align: center;
+	justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 700px) {
+	.controllerSwitcherDiv {
+		font-size: 10px;
+	}
+}
+
+@media (max-width: 560px) {
+	.buttoncontainer button {
+		font-size: 56px;
+	}
+}
+
+.buttoncontainer button:active {
+	background-color: var(--themesubwhite);
+}

@@ -1,0 +1,20 @@
+[
+	{
+		"userId": 2,
+		"username": "Groomp",
+		"pw": "123",
+		"creationTime": "2021-12-28T22:35:08.608Z",
+		"lastLoginTime": "2026-04-19T10:54:08.119Z",
+		"socketId": "D5S91Iq2jFm80IEXAAAT",
+		"ip": "::1"
+	},
+	{
+		"userId": 6,
+		"username": "Lisi",
+		"pw": "123",
+		"creationTime": "2022-03-19T16:20:03.896Z",
+		"lastLoginTime": "2022-03-19T16:26:35.309Z",
+		"socketId": "Zx397wNSLokt2bluAAAL",
+		"ip": "::ffff:192.168.2.164"
+	}
+]

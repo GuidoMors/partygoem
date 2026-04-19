@@ -1,0 +1,53 @@
+<html>
+  <link rel="icon" href="/static/common/images/favicon.ico">
+  <head>
+    <title>FUN TIMES</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+
+    <link rel="stylesheet" href="static/common/css/gamelog.css">
+    <link rel="stylesheet" href="static/common/css/common.css">
+    
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script src="/static/common/tools.js"></script>
+	  <script src="/static/common/login.js"></script>
+	  <script src="/static/common/partygoemMainMenu.js"></script>
+    <script src="/static/common/renderTabs.js"></script>
+
+  </head>
+  <body onbeforeunload="return disconnectPlayer()">
+
+    <div id="left">
+    </div>
+    
+    <div id="board">
+    </div>
+
+    <div id="right">
+
+      <div id="chevronContainer" class="chevronContainer" onclick="toggleMenu()">
+          <span id="chevron">&#9664;</span>
+      </div>
+
+      <div id="genericMenuDiv" name="genericMenuDiv" class="genericMenuDiv">	
+        <button onclick="changeName();" id= "changeNameButton">Change Name</button>
+        <button onclick="logoutPlayer();" id= "logoutButton">Logout</button>
+        <button onclick="activatePlayerlistTab();" id= "playerlistButton">Who's Here?</button>
+        <button onclick="activateChatTab();" id= "backToChatButton">Back to Chat</button>
+      </div>
+  
+      <div id="gameLog" name="gameLog" class="gameLog"></div>
+
+      <div id="typeBox" name="typeBox" class="typeBox">
+        <input class="inputMessage" type="text" name="inputMessage" id="inputMessage" value="">
+        <button class="messageButton"  onclick="sendMessage();" id= "messageButton">Send</button>
+      </div>
+
+      <div id="playerlistLog" name="playerlistLog" class="playerlistLog"></div>
+      
+    </div>
+   
+  </body>
+ 
+</html>
