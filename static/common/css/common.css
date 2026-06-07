@@ -331,6 +331,10 @@ body {
   top: 75px;
 }
 
+.signupButton.forUserLogin {
+  margin-right: 40% !important;
+}
+
 .userNameField {
   float: left;
   margin-top: 25px;
@@ -343,6 +347,11 @@ body {
   padding-left: 2%;
   min-width: 100px;
   position:absolute;
+}
+
+.userNameField.forUserLogin {
+  margin-top: 50px !important;
+  margin-left: 40% !important;
 }
 
 .userPwField {

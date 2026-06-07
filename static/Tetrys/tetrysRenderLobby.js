@@ -68,41 +68,39 @@ function drawCharacterSelection(){
 	deleteGuiElement("startGameButton");
 
 	if (isMeHost()){
-		var startGameButton=document.createElement("button");
-		startGameButton.setAttribute("id","startGameButton");
-		startGameButton.innerHTML = "START";
-		startGameButton.classList.add("startGameButton");
-		startGameButton.classList.add("BigButton");
+		// var startGameButton=document.createElement("button");
+		// startGameButton.setAttribute("id","startGameButton");
+		// startGameButton.innerHTML = "START";
+		// startGameButton.classList.add("startGameButton");
+		// startGameButton.classList.add("BigButton");
 
-				startGameButton.addEventListener('click', function(event) {
-			startGame();
-		});	
+		// startGameButton.addEventListener('click', function(event) {
+		// 	startGame();
+		// });		
 
-		lobbyDiv.appendChild(startGameButton);	
+		// lobbyDiv.appendChild(startGameButton);	
 
-		var lessTeamsButton =document.createElement("button");
-		lessTeamsButton.setAttribute("id","lessTeamsButton");
-		lessTeamsButton.innerHTML = "Teams--";
-		lessTeamsButton.classList.add("teamChoosingButton");
-		lobbyDiv.appendChild(lessTeamsButton);	
+		// var lessTeamsButton =document.createElement("button");
+		// lessTeamsButton.setAttribute("id","lessTeamsButton");
+		// lessTeamsButton.innerHTML = "Teams--";
+		// lessTeamsButton.classList.add("teamChoosingButton");
+		// lobbyDiv.appendChild(lessTeamsButton);	
 
-		var moreTeamsButton =document.createElement("button");
-		moreTeamsButton.setAttribute("id","moreTeamsButton");
-		moreTeamsButton.innerHTML = "Teams++";
-		moreTeamsButton.classList.add("teamChoosingButton");
-		lobbyDiv.appendChild(moreTeamsButton);	
+		// var moreTeamsButton =document.createElement("button");
+		// moreTeamsButton.setAttribute("id","moreTeamsButton");
+		// moreTeamsButton.innerHTML = "Teams++";
+		// moreTeamsButton.classList.add("teamChoosingButton");
+		// lobbyDiv.appendChild(moreTeamsButton);	
 
-					startGameButton.addEventListener('click', function(event) {
-				startGame();
-			});	
-			lessTeamsButton.addEventListener('click', function(event) {
-                if(gameSettings.teams >= 3){
-				    setTeams(gameSettings.teams-2); //server adds one again for spectators
-                }
-			});	
-			moreTeamsButton.addEventListener('click', function(event) {
-				setTeams(gameSettings.teams);//server adds already 1 for spectators
-			});	
+		// lessTeamsButton.addEventListener('click', function(event) {
+		// 	if(gameSettings.teams >= 3){
+		// 		setTeams(gameSettings.teams-2); //server adds one again for spectators
+		// 	}
+		// });	
+
+		// moreTeamsButton.addEventListener('click', function(event) {
+		// 	setTeams(gameSettings.teams);//server adds already 1 for spectators
+		// });	
 
 	} else {
 		var characterSelectionDiv=document.createElement("div");

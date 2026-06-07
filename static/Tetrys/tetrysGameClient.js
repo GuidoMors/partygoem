@@ -99,6 +99,8 @@ function doMoreOnReceiveGameSettings(){
 
 function doMoreOnReceiveGameState(){	
 	if (isMeHost()){
+		const currentUrl = window.location.href;
+		console.log(currentUrl + "?room=" + encodeURIComponent(gameState.hash));
 		fetch('/qrcode?hash=' + encodeURIComponent(gameState.hash))
 		.then(response => response.json())
 		.then(data => {
