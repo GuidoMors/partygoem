@@ -442,14 +442,14 @@ function redirectPage(){
 	var currentPage=window.location.href.substr(window.location.href.lastIndexOf("/")+1);
 	
 	//redirect to lobby if not already in lobby and gameId=0
-	if( gameId==0 && (currentPage!=="")){	
-		window.location.href = "/";
+	if( gameId==0 && (currentPage!=="404.html")){	
+		redirectTo404();
 	}
-	
+
 	//redirect to gameType
 	else{
 		if( gameId>0 && gameType!==currentPage){
-			window.location.href = gameType;
+			window.location.href = `/${gameType}`;
 		}	
 	}
 	refreshBrowserTabUserName();
