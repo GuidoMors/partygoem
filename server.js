@@ -175,7 +175,7 @@ static USERS_FILE_NAME="users.json";
 		} else {		 
 			socket.join(this.getGameIdByUser(userId));
 			var gameRoom=this.getGameRoomById(this.getGameIdByUser(userId))
-			this.io.to(socket.id).emit('joinedGameRoom', gameRoom.gameId, gameRoom.gameType);		
+			this.io.to(socket.id).emit('joinedGameRoom', gameRoom.gameId, gameRoom.gameType, false);		
 			var event={gameId: this.getGameIdByUser(userId), type:"refreshPlayer", target:userId};
 			this.refreshGameRoomInfo(this.getGameIdByUser(userId),event);		
 		}	  
@@ -190,7 +190,7 @@ static USERS_FILE_NAME="users.json";
 		} else {		 
 			socket.join(gameId);
 			var gameRoom=this.getGameRoomById(gameId)
-			this.io.to(socket.id).emit('joinedGameRoom', gameRoom.gameId, gameRoom.gameType);		
+			this.io.to(socket.id).emit('joinedGameRoom', gameRoom.gameId, gameRoom.gameType, true);		
 			var event={gameId: gameId, type:"refreshPlayer", target:userId};
 			this.refreshGameRoomInfo(gameId,event);		
 		}	 
@@ -199,6 +199,7 @@ static USERS_FILE_NAME="users.json";
 	
 	getGameControllerByGameId(gameId){
 		console.log("getGameControllerByGameId", gameId);
+		console.log("gameControllers" + this.gameControllers);
 		for(var i=0; i<this.gameControllers.length;i++){
 			if(this.gameControllers[i].gameId==gameId){
 				return this.gameControllers[i].controller;		
@@ -223,13 +224,14 @@ static USERS_FILE_NAME="users.json";
         if(gameId >0){
             this.pushLogMessage("{0} joined game room '{1}'.",[this.getUserNameByUserId(userId), gameRoom.gameName],  false, false, 0);   
         }
-		this.io.to(socket.id).emit('joinedGameRoom', gameId, gameRoom.gameType);	
+		this.io.to(socket.id).emit('joinedGameRoom', gameId, gameRoom.gameType, false);	
 
 		var event={gameId: gameId, type:"joinGameRoom", target:userId};
 		this.refreshGameRoomInfo(gameId,event);		
 	}	
 
 	adminJoinGame(socket, userId, gameId){
+		console.log("adminJoinGame "+ userId + " "+gameId );
 		var gameRoom=this.getGameRoomById(gameId);
 		if (socket.rooms.has("0")) {
 			socket.leave("0");
@@ -241,7 +243,7 @@ static USERS_FILE_NAME="users.json";
         if(gameId >0){
             this.pushLogMessage("{0} joined game room '{1}'.",[this.getUserNameByUserId(userId), gameRoom.gameName],  false, false, 0);   
         }
-		this.io.to(socket.id).emit('joinedGameRoom', gameId, gameRoom.gameType);	
+		this.io.to(socket.id).emit('joinedGameRoom', gameId, gameRoom.gameType, true);	
 
 		var event={gameId: gameId, type:"joinGameRoom", target:userId};
 		this.refreshGameRoomInfo(gameId,event);		
@@ -249,6 +251,7 @@ static USERS_FILE_NAME="users.json";
 	
 
 	joinGameRoom(socket, userId, gameId, enteredPassword){
+		console.log("joinGameRoom "+ userId + " "+gameId+ " "+enteredPassword );
 		var gameRoom=this.getGameRoomById(gameId);
 		if(gameRoom.pw==enteredPassword){
 			if(gameRoom.players.length < gameRoom.maxPlayers || gameRoom.maxPlayers=="∞"){
@@ -338,6 +341,7 @@ static USERS_FILE_NAME="users.json";
 	}
 
     doOnSuccessfulUserLogin(socket, userId, userName, gameroom_hash){
+		console.log("doOnSuccessfulUserLogin "+ userId + " "+userName+ " "+gameroom_hash );
 		this.updateUserInfoOnLogin(socket, userId, userName);
 		this.io.to(socket.id).emit("userLoginSuccessful", userName, userId, gameroom_hash);
 		var gameId = this.getGameIdByGameroomHash(gameroom_hash);
@@ -379,6 +383,7 @@ static USERS_FILE_NAME="users.json";
 	}
 
 	requestAdminLogin(socket, userName, pw_hash){
+		console.log("requestAdminLogin " + " "+userName+ " "+pw_hash );
 		var userId=0;
 		var message="";
 		for(var i=0; i< this.admins.length;i++){
@@ -403,6 +408,7 @@ static USERS_FILE_NAME="users.json";
 	}
 
     doOnSuccessfulAdminLogin(socket, userId, userName){
+		console.log("doOnSuccessfulAdminLogin " + " "+userId+ " "+userName );
 		this.updateAdminInfoOnLogin(socket, userId, userName);
 		this.io.to(socket.id).emit("adminLoginSuccessful", userName, userId);
 		this.refreshAdmin(socket,userId);
@@ -474,6 +480,7 @@ static USERS_FILE_NAME="users.json";
 	}
 
 	disconnectPlayer(socketId, username, userId){
+		console.log("disconnectPlayer " + " "+username+ " "+userId );
 		var gameId=this.getGameIdByUser(userId);
 		if (username != ""){
 			this.pushLogMessage("{0} has disconnected.", [username],false, false,gameId);
@@ -493,13 +500,15 @@ static USERS_FILE_NAME="users.json";
 	}
 	
 	leavePlayers(userId){
+		console.log("leaveplayers " + userId);
 		for(var i=0;i<this.gameRooms.length;i++){
 			for(var j=0;j<this.gameRooms[i].players.length;j++){
 				if (this.gameRooms[i].players[j]== userId) {	
 					this.gameRooms[i].players.splice(j, 1);
-					if (this.gameRooms[i].players.length < 1 && i != 0) {
-							this.destroyGameRoom(this.gameRooms[i].gameId);
-						}
+					//no more destroy game room on leaveplayers in this version?
+					//if (this.gameRooms[i].players.length < 1 && i != 0) {
+					//		this.destroyGameRoom(this.gameRooms[i].gameId);
+					//	}
 					return;
 				}
 			}
@@ -700,6 +709,7 @@ static USERS_FILE_NAME="users.json";
 
 
 	destroyGameRoom(gameId){
+		console.log("destroyGameRoom " + gameId );
 		for(var i=0;i<this.gameRooms.length;i++){
 			if(this.gameRooms[i].gameId==gameId){
 				this.gameRooms[i].isRunning=false;
@@ -717,6 +727,7 @@ static USERS_FILE_NAME="users.json";
 	}
 	
 	async leaveGameRoom(userId, gameId) {
+		console.log("leavegameroom "+ userId + " "+ gameId);
 		if (!userId) return;
 
 		const room = this.getGameRoomById(gameId);
