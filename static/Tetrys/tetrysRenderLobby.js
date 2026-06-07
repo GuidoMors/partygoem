@@ -21,8 +21,10 @@ socket.on(GAME_NAME+"_receiveCustomizations", function(customizationOptions, cus
 function removeLobby(){
 	var middle = document.getElementById("middle");
 	middle.style.display = "none";
-	var changeButton = document.getElementById("changeNameButton");
-	changeButton.style.display = "none";
+
+	// var changeButton = document.getElementById("changeNameButton");
+	// changeButton.style.display = "none";
+
 	var swapButton = document.getElementById("swapTabButton");
 	swapButton.style.display = "block";
 
@@ -30,6 +32,12 @@ function removeLobby(){
 	wrapper.style.display = "block";
 }
 
+function hideSideMenu() {
+    var sideMenu = document.getElementById("right");
+    if (sideMenu) {
+        sideMenu.remove();
+    }
+}
 
 function clearGameLobby(){
 	deleteGuiElement('lobbyDiv');
@@ -59,47 +67,69 @@ function drawCharacterSelection(){
 	deleteGuiElement("characterSelectionDiv");
 	deleteGuiElement("startGameButton");
 
-	var characterSelectionDiv=document.createElement("div");
-	characterSelectionDiv.setAttribute("id","characterSelectionDiv");
-	characterSelectionDiv.classList.add("characterSelection");
-	lobbyDiv.appendChild(characterSelectionDiv);
+	if (isMeHost()){
+		var startGameButton=document.createElement("button");
+		startGameButton.setAttribute("id","startGameButton");
+		startGameButton.innerHTML = "START";
+		startGameButton.classList.add("startGameButton");
+		startGameButton.classList.add("BigButton");
 
-	var characterSelectionDivLeft=document.createElement("div");
-	characterSelectionDivLeft.setAttribute("id","characterSelectionDivLeft");
-	characterSelectionDivLeft.classList.add("characterSelectionDivLeft");
-
-	var characterSelectionDivMiddle=document.createElement("div");
-	characterSelectionDivMiddle.setAttribute("id","characterSelectionDivMiddle");
-	characterSelectionDivMiddle.classList.add("characterSelectionDivMiddle");
-
-	var characterSelectionDivRight=document.createElement("div");
-	characterSelectionDivRight.setAttribute("id","characterSelectionDivRight");
-	characterSelectionDivRight.classList.add("characterSelectionDivRight");
-
-	characterSelectionDiv.appendChild(characterSelectionDivLeft);
-	characterSelectionDiv.appendChild(characterSelectionDivMiddle);
-	characterSelectionDiv.appendChild(characterSelectionDivRight);
-
-	drawCharacterSelectionLeft(characterSelectionDivLeft);
-	drawCharacterSelectionMiddle(characterSelectionDivMiddle);
-	drawCharacterSelectionRight(characterSelectionDivRight);
-
-	var startGameButton=document.createElement("button");
-	startGameButton.setAttribute("id","startGameButton");
-	startGameButton.innerHTML = "START";
-	startGameButton.classList.add("startGameButton");
-	startGameButton.classList.add("BigButton");
-
-	if  (isMeHost()) {
-		startGameButton.addEventListener('click', function(event) {
+				startGameButton.addEventListener('click', function(event) {
 			startGame();
 		});	
-		
+
+		lobbyDiv.appendChild(startGameButton);	
+
+		var lessTeamsButton =document.createElement("button");
+		lessTeamsButton.setAttribute("id","lessTeamsButton");
+		lessTeamsButton.innerHTML = "Teams--";
+		lessTeamsButton.classList.add("teamChoosingButton");
+		lobbyDiv.appendChild(lessTeamsButton);	
+
+		var moreTeamsButton =document.createElement("button");
+		moreTeamsButton.setAttribute("id","moreTeamsButton");
+		moreTeamsButton.innerHTML = "Teams++";
+		moreTeamsButton.classList.add("teamChoosingButton");
+		lobbyDiv.appendChild(moreTeamsButton);	
+
+					startGameButton.addEventListener('click', function(event) {
+				startGame();
+			});	
+			lessTeamsButton.addEventListener('click', function(event) {
+                if(gameSettings.teams >= 3){
+				    setTeams(gameSettings.teams-2); //server adds one again for spectators
+                }
+			});	
+			moreTeamsButton.addEventListener('click', function(event) {
+				setTeams(gameSettings.teams);//server adds already 1 for spectators
+			});	
+
 	} else {
-		startGameButton.disabled = true;
+		var characterSelectionDiv=document.createElement("div");
+		characterSelectionDiv.setAttribute("id","characterSelectionDiv");
+		characterSelectionDiv.classList.add("characterSelection");
+		lobbyDiv.appendChild(characterSelectionDiv);
+
+		var characterSelectionDivLeft=document.createElement("div");
+		characterSelectionDivLeft.setAttribute("id","characterSelectionDivLeft");
+		characterSelectionDivLeft.classList.add("characterSelectionDivLeft");
+
+		var characterSelectionDivMiddle=document.createElement("div");
+		characterSelectionDivMiddle.setAttribute("id","characterSelectionDivMiddle");
+		characterSelectionDivMiddle.classList.add("characterSelectionDivMiddle");
+
+		var characterSelectionDivRight=document.createElement("div");
+		characterSelectionDivRight.setAttribute("id","characterSelectionDivRight");
+		characterSelectionDivRight.classList.add("characterSelectionDivRight");
+
+		characterSelectionDiv.appendChild(characterSelectionDivLeft);
+		characterSelectionDiv.appendChild(characterSelectionDivMiddle);
+		characterSelectionDiv.appendChild(characterSelectionDivRight);
+
+		drawCharacterSelectionLeft(characterSelectionDivLeft);
+		drawCharacterSelectionMiddle(characterSelectionDivMiddle);
+		drawCharacterSelectionRight(characterSelectionDivRight);
 	}
-	lobbyDiv.appendChild(startGameButton);	
-	
 	
 }
 
@@ -212,11 +242,13 @@ function deleteGuiElementContents(IdToCleared) {
 }
 
 
-function clearBoard(){
-	deleteGuiElementContents("middle");
-	var leaveGameButton=document.getElementById("leaveGameButton");
-	leaveGameButton.style.display = "block";
-	
+function clearBoard() {
+    deleteGuiElementContents("middle");
+
+    var leaveGameButton = document.getElementById("leaveGameButton");
+    if (leaveGameButton) {
+        leaveGameButton.style.display = "block";
+    }
 }
 
 
@@ -286,22 +318,6 @@ function drawGameLobby(){
 	deleteGuiElement("postGameScreen");
 	
 	renderLogo();
-
-	fetch('/qrcode')
-    .then(response => response.json())
-    .then(data => {
-        var qrDiv = document.getElementById("qrDiv");
-        
-        while (qrDiv.firstChild) {
-            qrDiv.removeChild(qrDiv.firstChild);
-        }
-        
-        var img = document.createElement("img");
-        img.src = data.src;
-        img.alt = "QR Code";
-        
-        qrDiv.appendChild(img);
-    })
 	
 	var lobbyDiv=document.createElement("div");
 	lobbyDiv.setAttribute("id","lobbyDiv");
@@ -324,22 +340,24 @@ function drawGameLobby(){
 			teamblock.classList.add("themeBlue");
 		}
 
-		var joinGameButton=document.createElement("button");
-		joinGameButton.setAttribute("id","joinGameButton_"+i);
-		joinGameButton.innerHTML = "JOIN";
-		joinGameButton.classList.add("joinGameButton");
-		if (!Tools.isElementInList(gameState.players,"userId",userId)){
-			joinGameButton.addEventListener('click', function(event) {
-				var newTeamNr=event.srcElement.id.replace("joinGameButton_","");
-				joinGame(newTeamNr, getMySelectedCharacter());
-			});		
-		}else {
-			joinGameButton.addEventListener('click', function(event) {
-				var newTeamNr=event.srcElement.id.replace("joinGameButton_","");
-				changeTeam(newTeamNr); // just "i" didnt work, always defaulted i 3.
-			});
+		if (! isMeHost()){
+			var joinGameButton=document.createElement("button");
+			joinGameButton.setAttribute("id","joinGameButton_"+i);
+			joinGameButton.innerHTML = "JOIN";
+			joinGameButton.classList.add("joinGameButton");
+			if (!Tools.isElementInList(gameState.players,"userId",userId)){
+				joinGameButton.addEventListener('click', function(event) {
+					var newTeamNr=event.srcElement.id.replace("joinGameButton_","");
+					joinGame(newTeamNr, getMySelectedCharacter());
+				});		
+			}else {
+				joinGameButton.addEventListener('click', function(event) {
+					var newTeamNr=event.srcElement.id.replace("joinGameButton_","");
+					changeTeam(newTeamNr); // just "i" didnt work, always defaulted i 3.
+				});
+			}
+			teamblock.appendChild(joinGameButton);
 		}
-		teamblock.appendChild(joinGameButton);
 
 		var playerPicsContainer=document.createElement("div");
 		playerPicsContainer.classList.add("playerPicsContainer");
@@ -378,40 +396,11 @@ function drawGameLobby(){
 		});		
 		characterSelectionDiv.appendChild(leavePlayersButton);
 
-		var lessTeamsButton =document.createElement("button");
-		lessTeamsButton.setAttribute("id","lessTeamsButton");
-		lessTeamsButton.innerHTML = "Teams--";
-		lessTeamsButton.classList.add("teamChoosingButton");
-		characterSelectionDiv.appendChild(lessTeamsButton);	
-
-		var moreTeamsButton =document.createElement("button");
-		moreTeamsButton.setAttribute("id","moreTeamsButton");
-		moreTeamsButton.innerHTML = "Teams++";
-		moreTeamsButton.classList.add("teamChoosingButton");
-		characterSelectionDiv.appendChild(moreTeamsButton);	
-
 		var startGameButton=document.createElement("button");
 		startGameButton.setAttribute("id","startGameButton");
 		startGameButton.innerHTML = "START";
 		startGameButton.classList.add("startGameButton");
 		startGameButton.classList.add("BigButton");
-		if  (isMeHost()) {
-			startGameButton.addEventListener('click', function(event) {
-				startGame();
-			});	
-			lessTeamsButton.addEventListener('click', function(event) {
-                if(gameSettings.teams >= 3){
-				    setTeams(gameSettings.teams-2); //server adds one again for spectators
-                }
-			});	
-			moreTeamsButton.addEventListener('click', function(event) {
-				setTeams(gameSettings.teams);//server adds already 1 for spectators
-			});	
-		} else {
-			startGameButton.disabled = true;
-			lessTeamsButton.disabled = true;
-			moreTeamsButton.disabled = true;
-		}
 		lobbyDiv.appendChild(startGameButton);	
 	}
 

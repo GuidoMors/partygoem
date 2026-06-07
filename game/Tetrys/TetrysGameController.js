@@ -8,20 +8,18 @@ var fs = require("fs");
 var GAME_NAME="Tetrys";
 var NONE="none";
 
-
 var TILESIZEWIDTH = 64;
 var TILESIZEHEIGHT = 64;
 
 
 class TetrysGameController extends CommonGameController{
 
-		constructor(gameId, host, gameName, io, server) {  
+		constructor(gameId, host, gameName, io, server, hash) {  
 		super(GAME_NAME, gameId, host, gameName, io, server);
 		var defaultCustomCharacter={color:[200,100,0]};
 		this.characterHandler=new CharacterHandler(this,io, gameId, defaultCustomCharacter, {});
 	
-
-		this.tic = 0;
+		this.hash = hash;
 	
 		this.gameState={
 			players:[], 
@@ -33,7 +31,8 @@ class TetrysGameController extends CommonGameController{
 			difficulty: 1,
 			currentGamePhase:0,
 			lastTicTimer: 0,
-			map:{id:0, name:"", grid:[[]]}
+			map:{id:0, name:"", grid:[[]]},
+			hash: hash,
 		};	
 
 
@@ -288,7 +287,7 @@ class TetrysGameController extends CommonGameController{
 	}
 	
 	initializeStatistics(){
-		this.intermediateGameState={ gameTimer:0,gameTime:0, score:{teamScore:{}, playerScore:{}}};
+		this.intermediateGameState={ gameTimer:0,gameTime:0, score:{teamScore:{}, playerScore:{}}, hash: this.hash};
 		for (var i=0;i<this.gameState.players.length;i++){
 			var userId=this.gameState.players[i].userId;
 			this.intermediateGameState.score.playerScore[userId]={userId:this.gameState.players[i].userId, 

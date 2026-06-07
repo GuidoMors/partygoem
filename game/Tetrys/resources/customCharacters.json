@@ -9,6 +9,25 @@
 				198
 			]
 		}
+	},
+	{
+		"userId": 3,
+		"selectedCharacter": {
+			"color": [
+				200,
+				100,
+				0
+			]
+		}
+	},
+	{
+		"userId": 2,
+		"selectedCharacter": {
+			"color": [
+				200,
+				100,
+				0
+			]
+		}
 	}
-	
 ]

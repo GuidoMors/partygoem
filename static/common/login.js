@@ -3,6 +3,7 @@ var socket = io();
 var username = "";
 var myUsername = "";
 var userId =  0;
+var gameroomHash = "";
 var adminUser;
 var gameId=0;
 var gameType="";
@@ -10,39 +11,72 @@ var users=[]; // simple list of userId, username
 var gameRoom;
 var isLoggedIn=false;
 
-
-//To Reset UserID:
-//setCookie("userId","");
-
-
 socket.on('connect', () => refresh());
-//socket.on('connect', () => loginPlayer());
 
 function refresh(){
 
-	loginCookie();
-	
-	//socket.emit('refresh',  userId);
+	if (isLoggedIn){
+		return;
+	}
+
+	const params = new URLSearchParams(window.location.search);
+	var gameroom_hash = params.get("room");
+
+	if (gameroom_hash){
+		setCookie("user_gameroom_hash", gameroom_hash)
+	} else {
+		gameroom_hash = getCookieValue("user_gameroom_hash");
+	}
+
+	var loginAttempt = adminLoginWithCookie();
+
+	if (loginAttempt){
+		return;
+	}
+
+	if (gameroom_hash) {
+		socket.emit('validateGameroomHash', gameroom_hash);
+	} else {
+
+		loginAttempt = userLoginWithCookie();
+
+		if (loginAttempt){
+			return;
+		}
+
+		if (window.location.pathname == "/login") {
+			drawLogin();
+		} else {
+			redirectTo404();
+		}
+		
+	}
 }
+
+
 
 ////////////////////////////
 // Define Server Events:
 ////////////////////////////
 
+socket.on('validateGameroomHash', function(hash, validated) {
+	var gameroom_hash = getCookieValue("user_gameroom_hash");
 
-/*
-var username = getUserName();
-var userId =  getUserId();
-socket.on('connect', () => loginPlayer());
+	if (hash == gameroom_hash){
+		if (validated){
+			startUserCookieCreationProcess();
+		} else {
+			if (window.location.pathname == "/login") {
+				drawLogin();
+			} else {
 
+				redirectTo404();
+			}
+		}
+	}
 
-
-socket.on('userIdChanged', function(newUserId) {
-	userId=newUserId;
-	setCookie("userId", newUserId, 365);
-	refreshBrowserTabUserName();
 });
-*/
+
 
 socket.on('joinedGameRoom', function(gameRoomId,newGameType) {
 	gameId=gameRoomId;
@@ -60,6 +94,7 @@ socket.on('requestGamePassword', function(gameId) {
 });
 
 socket.on('gameRoomsUpdated', function(allGameRooms, allSimpleUsersList, allGames) {
+	console.log()
 	users=allSimpleUsersList;
 	gameRooms=allGameRooms;
 	if(gameId==0 && isLoggedIn){
@@ -81,31 +116,55 @@ socket.on('gameRoomUpdated', function(gameId,myGameRoom, allSimpleUsersList) {
 	adminUser=gameRoom.host;
 });
 
+socket.on('gameRoomDestroyed', function(destroyedGameId) {
+	if (gameId == destroyedGameId){
+		socket.emit('hasPasswordCheck', userId, 0); //join lobby
+	}
+});
+
 
 socket.on('userNameChanged', function(newUserName) {
-	//alert("username changed to: "+newUserName);
-	//("Playernamechanged from "+username+" to "+newUserName);
 	username=newUserName;
 	myUsername=newUserName;
-	setCookie("username_new", username, 5);
+	setCookie("user_name", username);
+	refreshBrowserTabUserName();
+});
+
+socket.on('adminNameChanged', function(newUserName) {
+	username=newUserName;
+	myUsername=newUserName;
+	setCookie("admin_name", username);
 	refreshBrowserTabUserName();
 });
 
 
 // NEW LOGIN
-socket.on('loginSuccessful', function(myUserName, myUserId) {
+socket.on('userLoginSuccessful', function(myUserName, myUserId, myGameRoomHash) {
+	console.log("succesful login");
 	userId=myUserId;
 	username=myUserName;
 	myUsername=myUserName;
-	setCookie("username_new", username, 5);
+	gameRoomHash=myGameRoomHash;
+	setCookie("user_name", username);
+	//setCookie("user_gameroom_hash", myGameRoomHash);
+	setCookie("user_id", myUserId);
 	isLoggedIn=true;
 	refreshBrowserTabUserName();
-	//drawLobby();
-
-	
 });
 
-socket.on('loginFail', function(myUserName, message, isAuto) {
+socket.on('adminLoginSuccessful', function(myUserName, myUserId, myGameRoomHash) {
+	userId=myUserId;
+	username=myUserName;
+	myUsername=myUserName;
+	gameRoomHash=myGameRoomHash;
+	setCookie("admin_name", username);
+	setCookie("admin_gameroom_hash", username);
+	setCookie("admin_id", myUserId);
+	isLoggedIn=true;
+	refreshBrowserTabUserName();
+});
+
+socket.on('adminLoginFail', function(myUserName, message, isAuto) {
 	userId=0;
 	username="";
 	isLoggedIn=false;
@@ -116,29 +175,44 @@ socket.on('loginFail', function(myUserName, message, isAuto) {
 	}
 });
 
-socket.on('signupSuccessful', function(myUserName, myUserId, pw) {
-	alert("Signup successful! Your Username is '"+myUserName+"', and your Favourite Animal is '"+pw+"'.");
-	username=myUserName;
-	myUsername=myUserName;
-	userId=myUserId;
-	isLoggedIn=true;
-	setCookie("username_new", username, 5);
-	refreshBrowserTabUserName();
-});
-
-socket.on('signupFail', function(myUserName, message) {
-
-	alert("signup failed with userName '"+myUserName+"', "+message);
+socket.on('userLoginFail', function(myUserName, message, isAuto) {
+	console.log("userloginFail", message);
 	userId=0;
 	username="";
 	isLoggedIn=false;
-	drawLogin();
-
-	
+	if (!isAuto){
+		drawFailMessage(message);
+	}
 });
 
+// socket.on('signupSuccessful', function(myUserName, myUserId, pw) {
+// 	alert("Signup successful! Your Username is '"+myUserName+"', and your Favourite Animal is '"+pw+"'.");
+// 	username=myUserName;
+// 	myUsername=myUserName;
+// 	userId=myUserId;
+// 	isLoggedIn=true;
+// 	setCookie("username_new", username);
+// 	refreshBrowserTabUserName();
+// });
 
+// socket.on('signupFail', function(myUserName, message) {
 
+// 	alert("signup failed with userName '"+myUserName+"', "+message);
+// 	userId=0;
+// 	username="";
+// 	isLoggedIn=false;
+// 	drawLogin();
+
+	
+// });
+
+function drawFailMessage(message){
+	var failDiv = document.getElementById('failDiv');
+	if (failDiv){
+		failDiv.innerHTML = message;
+	}
+	
+}
 
 
 document.addEventListener('keydown', function(event) {
@@ -157,12 +231,14 @@ document.addEventListener('keydown', function(event) {
 ////////////////////////////
 
 //Player / Login
-function logoutPlayer(){
-	socket.emit('logoutPlayer', username, userId);
+function logoutAdmin(){
+	socket.emit('logoutAdmin', username, userId);
 	isLoggedIn=false;
 	username="";
 	userId=0;
-	setCookie("username_new", "", 5);
+	setCookie("admin_name", "");
+	setCookie("admin_pw_hash", "");
+	setCookie("admin_gameroom_hash", "");
 	if (typeof clearBoard === 'function') { 
 		clearBoard();
 	}
@@ -172,50 +248,17 @@ function logoutPlayer(){
 
 function disconnectPlayer(){
 	socket.emit('disconnectPlayer', username, userId);
-	
 }
 
 function getUserName() {
-	
 	return username;
 }
-
-/*
-function loginPlayer(){
-	username = getUserName();
-	userId =  getUserId();
-	
-	refreshBrowserTabUserName();
-	
-	socket.emit('playerlogin', username , userId);
-}
-
-
-
-function requestUserName(username, userId){
-	socket.emit('userNameRequested', username, userId);
-}
-
-
-
-function getUserName() {
-	if(username== null || username == undefined || username==""){
-		username= getCookie("username");
-	}
-	
-	if (username== null || username == undefined || username=="") {
-		username = prompt("Please enter your name:", "");
-    }
-	return username;
-}
-
-*/
 
 function getMyGameRoom(){
 	return gameRoom;
 }
 
-function getCookie(cname) {
+function getCookieValue(cname) {
   var name = cname + "=";
   var decodedCookie = decodeURIComponent(document.cookie);
   var ca = decodedCookie.split(';');
@@ -232,6 +275,9 @@ function getCookie(cname) {
 }
 
 function setCookie(cname, cvalue, exdays) {
+  if (!exdays){
+	exdays = 5;
+  }
   var d = new Date();
   d.setTime(d.getTime() + (exdays*24*60*60*1000));
   var expires = "expires="+ d.toUTCString();
@@ -262,7 +308,7 @@ function changeGamePassword(newGamePw){
 
 function getUserId() {
 	if(userId== null || userId == undefined|| userId==""){
-		userId= getCookie("userId");
+		userId = getCookieValue("userId");
 	}
 	if(userId== null || userId == undefined || userId==""){
 		userId= 0;
@@ -285,7 +331,7 @@ function refreshBrowserTabUserName(){
 }
 
 
-function changeName(){
+function changeUserName(){
 	var newUsername = prompt("Who do you want to be now again?!:", "");
 	if (newUsername != "" && newUsername != null && newUsername != undefined) {
 		socket.emit('changeUserNameRequested', newUsername, userId);
@@ -337,7 +383,7 @@ function joinGame(gameId){
 }
 
 function leaveGame(){
-	socket.emit('leaveGameRoom', userId,gameId);
+	socket.emit('leaveGameRoom', userId, gameId);
 	
 }
 
@@ -409,24 +455,111 @@ function redirectPage(){
 	refreshBrowserTabUserName();
 }
 
-/*
-//TEST
-function startGame(){
-	window.location.href = 'alchemore';
-}
-*/
+function startUserCookieCreationProcess(){
+	var gameroom_hash = getCookieValue("user_gameroom_hash");
 
-function loginCookie(){
-	var newUsername=getCookie("username_new");
-	socket.emit("requestPlayerLoginCookie", newUsername);
-}
-
-function login(userName, pw){
-	socket.emit("requestPlayerLogin", userName, pw);
-}
-
-function signup(userName, pw){
-	if(userName!= undefined && userName!=""){
-		socket.emit("requestPlayerSignup", userName ,pw);
+	if (!gameroom_hash) {
+		var params = new URLSearchParams(window.location.search);
+		gameroom_hash = params.get("room");
+		if (!gameroom_hash){
+			redirectTo404();
+			return;
+		}
+		setCookie("user_gameroom_hash", gameroom_hash);
 	}
+
+	var name = getCookieValue("user_name");
+
+	if (!name) {
+		redirectToConnect();
+	} else {
+		userLoginWithCookie();
+	}
+
+}
+
+function redirectToConnect() {
+    if (!window.location.pathname.endsWith("/connect.html")) {
+        window.location.href = "/static/common/connect.html" + window.location.search;
+    }
+}
+
+function redirectTo404() {
+    if (!window.location.pathname.endsWith("/404.html")) {
+		const query = window.location.search;
+        window.location.href = "/static/common/404.html" + window.location.search;
+    }
+}
+
+function connectButton(name){
+
+	if(name!= undefined && name!=""){
+		if (getCookieValue("user_name") != name){
+			setCookie("user_name", name);
+			var pw_hash = simpleHash(socket.id + name).slice(0, 8);
+			setCookie("user_pw_hash", pw_hash);
+		}
+		userLoginWithCookie();
+	} else {
+		drawFailMessage("Please insert a proper username.");
+	}
+}
+
+function userLoginWithCookie(){
+	
+	var name = getCookieValue("user_name");
+	var pw_hash = getCookieValue("user_pw_hash");
+	var gameroom_hash = getCookieValue("user_gameroom_hash");
+
+	if (!name || name == false || name == undefined || 
+		!gameroom_hash  || gameroom_hash == false || gameroom_hash == undefined
+	) {
+		return false;
+	} else {
+		if (!pw_hash){
+			var pw_hash = simpleHash(socket.id + name).slice(0, 8);
+			setCookie("user_pw_hash", pw_hash);
+		}
+		
+		console.log(name, pw_hash, gameroom_hash);
+		socket.emit("requestUserLogin", name, pw_hash, gameroom_hash);
+		return true;
+	}
+	
+}
+
+function adminLoginWithCookie(){
+	var name = getCookieValue("admin_name");
+	var pw_hash = getCookieValue("admin_pw_hash");
+
+	if (!name || !pw_hash ){
+		return false;
+	} else {
+		socket.emit("requestAdminLogin", name, pw_hash);
+		return true;
+	}
+}
+
+function adminLogin(userName, pw){
+	var pw_hash = simpleHash(pw);
+	setCookie("admin_name", userName);
+	setCookie("admin_pw_hash", pw_hash);
+	socket.emit("requestAdminLogin", userName, pw_hash);
+}
+
+// function signup(userName, pw){
+// 	if(userName!= undefined && userName!=""){
+// 		socket.emit("requestPlayerSignup", userName ,pw);
+// 	}
+// }
+
+function simpleHash(str) {
+    let hash = 0;
+
+    for (let i = 0; i < str.length; i++) {
+        hash = ((hash << 5) - hash) + str.charCodeAt(i);
+        hash |= 0; // convert to 32-bit int
+    }
+
+    return Math.abs(hash).toString(16);
 }

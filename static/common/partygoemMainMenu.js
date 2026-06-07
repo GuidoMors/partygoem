@@ -7,7 +7,9 @@ function clearLobby(){
 	deleteGuiElement('playerPics');
 	deleteGuiElement('gameLogoDiv');
 	var logoutButton=document.getElementById("logoutButton");
-	logoutButton.style.display = "block";
+	if (logoutButton){
+		logoutButton.style.display = "block";
+	}
 }
 
 
@@ -194,15 +196,10 @@ function clearLogin(){
 	deleteGuiElement('failDiv');
 	deleteGuiElement('gameLogoDiv');
 	var logoutButton=document.getElementById("logoutButton");
-	logoutButton.style.display = "block";
-}
-
-function clearLobby(){
-	deleteGuiElement('loginDiv');
-	deleteGuiElement('failDiv');
-	deleteGuiElement('gameLogoDiv');
-	var logoutButton=document.getElementById("logoutButton");
-	logoutButton.style.display = "block";
+	if (logoutButton){
+		logoutButton.style.display = "block";
+	}	
+	
 }
 
 function clearQR(){
@@ -243,29 +240,37 @@ function drawLogin(){
 	loginButton.classList.add("neongreen");
 	loginButton.classList.add("BigButton");
 	loginButton.innerHTML="Login";
+	
 	loginButton.addEventListener('click', function(event) {
-		
 		var userName= document.getElementById("userNameField").value;
 		var pw= document.getElementById("userPwField").value;
-		login(userName,pw);
+		adminLogin(userName,pw);
 	});		
 	
 	loginDiv.appendChild(loginButton);
 	
 	var logoutButton= document.getElementById("logoutButton");
-	logoutButton.disabled = true;	
-
+	if (logoutButton){
+		logoutButton.disabled = true;
+	}
+		
 	var whosHereButton = document.getElementById("playerlistButton");
-	whosHereButton.disabled = true;	
-
-	var changeNameButton = document.getElementById("changeNameButton");
-	changeNameButton.disabled = true;	
+	if (whosHereButton){
+		whosHereButton.disabled = true;	
+	}
+	
 	
 	var messageButton = document.getElementById("messageButton");
-	messageButton.disabled = true;	
+	if (messageButton){
+		messageButton.disabled = true;	
+	}
+	
 
 	var right = document.getElementById("right");
-	right.style.display = "none";
+	if (right){
+		right.style.display = "none";
+	}
+	
 
 	// var signUpButton=document.createElement("button");
 	// signUpButton.setAttribute("id","signUpButton");
@@ -341,8 +346,8 @@ function enableTab(){
 	var whosHereButton = document.getElementById("playerlistButton");
 	whosHereButton.disabled = false;	
 
-	var changeNameButton = document.getElementById("changeNameButton");
-	changeNameButton.disabled = false;	
+	// var changeNameButton = document.getElementById("changeNameButton");
+	// changeNameButton.disabled = false;	
 	
 	var messageButton = document.getElementById("messageButton");
 	messageButton.disabled = false;	
@@ -370,12 +375,4 @@ function clearBoard(){
 	deleteGuiElementContents("board");
 	var logoutButton=document.getElementById("logoutButton");
 	logoutButton.style.display = "block";
-}
-
-function drawFailMessage(message){
-	var failDiv = document.getElementById('failDiv');
-	if (failDiv){
-		failDiv.innerHTML = message;
-	}
-	
 }

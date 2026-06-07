@@ -1,0 +1,50 @@
+<html>
+  <link rel="icon" href="/static/common/images/favicon.ico">
+  <head>
+    <title>FUN TIMES</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+
+    <link rel="stylesheet" href="/static/common/css/gamelog.css">
+    <link rel="stylesheet" href="/static/common/css/common.css">
+    
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script src="/static/common/tools.js"></script>
+	  <script src="/static/common/login.js"></script>
+	  <script src="/static/common/partygoemMainMenu.js"></script>
+    <script src="/static/common/renderTabs.js"></script>
+
+  </head>
+  <body onbeforeunload="return disconnectPlayer()">
+
+    <div id="left">
+    </div>
+    
+    <div id="board">
+      <div id="gameLogoDiv" class="gameLogo neongreen">partygoem</div>
+        <div id="loginDiv" class="loginDiv">
+          <input id="userNameField" placeholder="Username" class="userNameField">
+          <button id="signUpButton" class="signUpButton neonborder neonbutton neongreen">Connect</button>
+        </div>
+        <div id="failDiv" class="failDiv neonwhite"></div>
+    </div>
+
+    <div id="right">
+      
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const signUpButton = document.getElementById("signUpButton");
+
+        signUpButton.addEventListener("click", function () {
+          const userName = document.getElementById("userNameField").value.trim();
+          connectButton(userName);
+        });
+      });
+    </script>
+   
+  </body>
+ 
+</html>

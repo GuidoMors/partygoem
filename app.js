@@ -33,15 +33,11 @@ async function setupPartygoem() {
         return;
     }
     URL = `http://${PUBLICIP}:${PORT}`;
-    QRCODEDATA = await QRCode.toDataURL(URL);
-    if (!QRCODEDATA) {
-        console.error('Could not make a QR Code.');
-        return;
-    }
-    bootPartygoemServer(LOCALIP, PUBLICIP, PORT, QRCODEDATA, GAMES);
+
+    bootPartygoemServer(LOCALIP, PUBLICIP, PORT, GAMES);
 }
 
-function bootPartygoemServer(LOCALIP, PUBLICIP, PORT, QRCODEDATA, GAMES){
+function bootPartygoemServer(LOCALIP, PUBLICIP, PORT, GAMES){
     const ServerController = require('./server.js');
     var gameServer = new ServerController();
     gameServer.run(server, io);
@@ -49,23 +45,56 @@ function bootPartygoemServer(LOCALIP, PUBLICIP, PORT, QRCODEDATA, GAMES){
     app.set('port', PORT);
     app.use('/static', express.static(__dirname + '/static'));
 
+    const qrCache = new Map();
+
     for (let game of GAMES) {
         app.get('/'+game, (request, response) => response.sendFile(path.join(__dirname, '/static/'+game+'/'+game+'.html')));
     }
     
-    app.get('/qrcode', (request, response) => {
-        if (!QRCODEDATA) {
-            return response.status(500).json({ error: 'QR code not generated yet.' });
+    app.get('/qrcode', async (request, response) => {
+        try {
+            const room = request.query.hash || '';
+            const qr = await generateAndCacheQR(room);
+            response.json({ src: qr });
+        } catch (err) {
+            console.error(err);
+            response.status(500).json({
+                error: 'Could not generate QR code.'
+            });
         }
-        response.json({ src: QRCODEDATA });
     });
+
     app.get('/', function(request, response) {
         response.sendFile(path.join(__dirname, 'index.html'));
+    });
+
+    app.get('/login', (req, res) => {
+        res.sendFile(path.join(__dirname, 'index.html'));
     });
 
     server.listen(PORT, async function() {
         console.log('Starting server: ' + PUBLICIP +':'+ PORT);
     });
+
+    async function generateAndCacheQR(room) {
+        const key = room || '__default__';
+
+        if (qrCache.has(key)) {
+            return qrCache.get(key);
+        }
+
+        let fullUrl = URL;
+
+        if (room) {
+            fullUrl = `${URL}?room=${encodeURIComponent(room)}`;
+        }
+
+        const qrData = await QRCode.toDataURL(fullUrl);
+
+        qrCache.set(key, qrData);
+
+        return qrData;
+    }
 }
 
 

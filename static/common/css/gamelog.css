@@ -98,37 +98,30 @@
 }
 
 
-#changeNameButton {
-  float: left;
-  width: 33.3%;
-  overflow:hidden;
-  height: 100%;
-}
-
 #logoutButton {
   float: left;
-  width: 33.3%;
+  width: 50%;
   overflow:hidden;
   height: 100%;
 }
 
 #playerListButton {
   float: left;
-  width: 33.3%;
+  width: 50%;
   overflow:hidden;
   height: 100%;
 }
 
 #leaveGameButton {
   float: left;
-  width: 33.3%;
+  width: 50%;
   overflow:hidden;
   height: 100%;
 }
 
 #backToChatButton {
   float: left;
-  width: 33.3%;
+  width: 50%;
   overflow:hidden;
   display: none;
   height: 100%;

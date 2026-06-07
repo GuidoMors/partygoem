@@ -32,12 +32,13 @@ socket.on(GAME_NAME+"_receiveGameState", function(newGameState, newGameId){
 	socket.emit(GAME_NAME+"_requestGameSettings"+gameId, socket.id);
 	socket.emit(GAME_NAME+"_setMeAsControllerMode"+gameId, socket.id, userId, null);
 	socket.emit(GAME_NAME+"_requestIntermediateGameState"+gameId, socket.id);
-	if (gameState.isRunning) {
-		if (deviceIsControllerMode){
-			showControllerMode(true);
-		} else {
-			showControllerMode(false);
-		}
+
+	if (!isHost){
+		hideSideMenu();
+	}
+
+	if (gameState.isRunning && !isHost) {
+		showControllerMode(true);
 	} else {
 		showControllerMode(false);
 	}
@@ -88,18 +89,34 @@ function onLoadInit(){
 
 function doMoreOnReceiveGameSettings(){
 	if(gameState.isRunning){
-		
 		removeLobby();
 		activateSideTab();
-		
 	} else {
 		drawGameLobby();
 	}
 	
 }
 
-function doMoreOnReceiveGameState(){
-		
+function doMoreOnReceiveGameState(){	
+	if (isMeHost()){
+		fetch('/qrcode?hash=' + encodeURIComponent(gameState.hash))
+		.then(response => response.json())
+		.then(data => {
+			var qrDiv = document.getElementById("qrDiv");
+
+			if (qrDiv){
+				while (qrDiv.firstChild) {
+					qrDiv.removeChild(qrDiv.firstChild);
+				}
+				
+				var img = document.createElement("img");
+				img.src = data.src;
+				img.alt = "QR Code";
+				
+				qrDiv.appendChild(img);
+			}
+		})
+	}
 }
 
 
@@ -309,8 +326,7 @@ function doOnReceiveIntermediateGameState(l){
 	if(intermediateGameState.isPaused){
 		drawGamePause();
 		
-	}
-	else{
+	} else{
 		if (intermediateGameState.gameTimer == -1) {
 			drawPostGame();
 		} 
