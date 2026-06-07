@@ -80,19 +80,19 @@ class TetrysGameController extends CommonGameController{
 
 	defineServerListenersFor(socket){
 		socket.on(this.gameType+"_startGame"+this.gameId, () => this.startGame() );
-		socket.on(this.gameType+"_finishGame"+this.gameId, () => this.finishGame() );
+		//socket.on(this.gameType+"_finishGame"+this.gameId, () => this.finishGame() );
 		socket.on(this.gameType+"_requestGameState", socketId => this.giveGameStateToSocket(socketId) );
 		socket.on(this.gameType+"_requestGameSettings"+this.gameId, socketId => this.giveGameSettingsToSocket(socketId) );
 		socket.on(this.gameType+"_requestIntermediateGameState"+this.gameId, socketId => this.refreshIntermediateGameInfo(socketId) );
 		socket.on(this.gameType+"_attemptPauseAction"+this.gameId, userId => this.attemptPauseAction(socket, userId));	
 		socket.on(this.gameType+"_updatePlayerMovement"+this.gameId, (movement, userId) => this.updatePlayerMovement(movement, userId));
 		socket.on(this.gameType+"_attemptPlayerAction"+this.gameId, userId => this.attemptPlayerAction(socket, userId));
-		socket.on(this.gameType+"_setMeAsControllerMode"+this.gameId, (socketId, playerId, isController) => this.refreshPlayerAsControllerMode(socketId, playerId, isController));
+		//socket.on(this.gameType+"_setMeAsControllerMode"+this.gameId, (socketId, playerId, isController) => this.refreshPlayerAsControllerMode(socketId, playerId, isController));
 	}
 	
 	deleteListeners(){
 		this.io.removeAllListeners([this.gameType+"_startGame"+this.gameId]);
-		this.io.removeAllListeners([this.gameType+"_finishGame"+this.gameId]);
+		//this.io.removeAllListeners([this.gameType+"_finishGame"+this.gameId]);
 		this.io.removeAllListeners([this.gameType+"_requestGameState"]);
 		this.io.removeAllListeners([this.gameType+"_requestGameSettings"+this.gameId]);
 		this.io.removeAllListeners([this.gameType+"_attemptPauseAction"+this.gameId]);
@@ -372,7 +372,7 @@ class TetrysGameController extends CommonGameController{
 		return this.gameState.tiles;
 	}
 	
-	attemptPlayerAction(socket,userId){
+	attemptPlayerAction(userId){
 		for(var i=0;i<this.gameState.players.length;i++){
 				if(this.gameState.players[i].userId==userId){
 					this.quickGameState.players[userId].direction=((this.quickGameState.players[userId].direction+1) %4);
@@ -419,7 +419,7 @@ class TetrysGameController extends CommonGameController{
 				this.attemptMovement(player.userId, dx, dy);
 			}
             if(player.movement.up){
-               this.attemptPlayerAction(this.server.getSocketByUser(player.userId), player.userId)
+               this.attemptPlayerAction(player.userId)
             }
 			player.facing.left=false;
 			player.facing.right=false;
@@ -593,6 +593,12 @@ class TetrysGameController extends CommonGameController{
 		this.refreshIntermediateGameInfo();
 		this.refreshQuickGameInfo();
 		this.server.pushLogMessage("Game Over! with a score of !",[],  false, false,this.gameId);		
+
+				
+		setTimeout(function(){//new: since admin may not click "back to lobby after game ends, automatically finishGame after 10 secs"
+				finishGame();
+			}
+		,  10000);
 				
 	}
 		
@@ -739,7 +745,8 @@ class TetrysGameController extends CommonGameController{
 		}
 		
 	}
-
+	// in this version, all players should be controller mode and admin non controller
+/*
 	refreshPlayerAsControllerMode(socketId, playerId, isController){
 
 		if(isController == null ){
@@ -753,8 +760,7 @@ class TetrysGameController extends CommonGameController{
 		}
 		
 		this.io.to(socketId).emit(GAME_NAME+"_receiveMeAsController", isController);	
-	}
-	
+	}*/
 	
 	
 	/**
@@ -895,9 +901,8 @@ STATIC PART
 		}
 	}
 
+
 	
-	
-		
 		
 	startGame(){
 		this.doOnStartGame();
@@ -925,6 +930,7 @@ STATIC PART
 	
 	
 	giveGameStates(){
+		console.log("givegamestates:"+ this.gamestate)
 		this.io.to(this.gameId).emit(this.gameType+"_receiveGameState",this.gameState, this.gameId);	
 	}
 

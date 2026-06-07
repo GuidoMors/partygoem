@@ -13,7 +13,9 @@ var isHost=false;
 var isBusy=true;
 var intermediateGameState;
 var quickGameState;
-var deviceIsControllerMode = false;
+//var deviceIsControllerMode = false;
+
+
 
 
 // call the function that runs on loading the page
@@ -202,7 +204,7 @@ function drawPostGame(){
 		scoreContainer.classList.add("scoreContainer");
 	
 		postgame.appendChild(scoreContainer);
-
+		/*
 		if (gameState.host==userId) {
 			var finishGameButton=document.createElement("button");
 			finishGameButton.setAttribute("id","finishGameButton");
@@ -213,7 +215,9 @@ function drawPostGame(){
 				finishGame();
 			});	
 			postgame.appendChild(finishGameButton);	
-		}
+		}*/
+
+
 	}
 
 	showControllerMode(false);
@@ -259,7 +263,7 @@ function doOnReceiveQuickGameState(reducedQuickGameState){
 		}
 	}
 	clearCanvas();
-	if (!deviceIsControllerMode){
+	if (!isDeviceIsControllerMode()){
 		drawMap();	
 		drawGameScore();
 	}
@@ -333,8 +337,8 @@ function doOnReceiveIntermediateGameState(l){
 			drawPostGame();
 		} 
 
-		showControllerMode(deviceIsControllerMode);
-		if (!deviceIsControllerMode){
+		showControllerMode(isDeviceIsControllerMode());
+		if (!isDeviceIsControllerMode()){
 			if (intermediateGameState.gameTimer < 5) {
 				postGameDrawn = false;
 				drawStartAnimation();
@@ -424,21 +428,21 @@ function drawMap(){
 }
 
 function showControllerMode(on){
-	var right = document.getElementById("right");
 	var deviceController = document.getElementById("deviceController");
+	var right = document.getElementById("right");
 	if (deviceController){
 		if (on && intermediateGameState && intermediateGameState.gameTimer > -1){
 			clearOverlayCanvas();
 			clearCanvas();
 			deviceController.style.display = "block";
 
-			if (!right.classList.contains('controllermoderight')){ 
+			if (right != null && !right.classList.contains('controllermoderight')){ 
 				right.classList.add('controllermoderight');
 			}
 
 		} else {
 			deviceController.style.display = "none";
-			if (right.classList.contains('controllermoderight')){ 
+			if (right != null && right.classList.contains('controllermoderight')){ 
 				right.classList.remove('controllermoderight');
 			}
 		}
@@ -446,7 +450,7 @@ function showControllerMode(on){
 
 	var switcherBoxes = document.querySelectorAll('.controllerSwitcherButton');
 	switcherBoxes.forEach(function(checkbox) {
-		checkbox.checked = deviceIsControllerMode; 
+		checkbox.checked = isDeviceIsControllerMode(); 
 	});
 
 }
@@ -470,17 +474,26 @@ function drawGameScore(){
 	}
 
 }
-
+/*
 function toggleControllerOption(){
 	deviceIsControllerMode = !deviceIsControllerMode;
 	if(gameState.isRunning){
 		showControllerMode(deviceIsControllerMode);
 	}
+	console.log("emit _setMeAsControllerMode " + deviceIsControllerMode );
 	socket.emit(GAME_NAME+"_setMeAsControllerMode"+gameId, socket.id, userId, deviceIsControllerMode);
 }
-
+*/
+/*
 socket.on(GAME_NAME+"_receiveMeAsController", function(isController){
+	console.log("_receiveMeAsController " + isController );
 	deviceIsControllerMode = isController;
 	showControllerMode(isController);
 });
+*/
 
+
+function isDeviceIsControllerMode() {
+	//return deviceIsControllerMode;
+	return !isHost;
+}
