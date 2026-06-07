@@ -50,6 +50,7 @@ class PlayerHandler extends CommonGameComponent{
 		socket.on(this.gameController.gameType+"_leavePlayer"+this.gameId, (userId) => this.leaveGame(userId) );
 		socket.on(this.gameController.gameType+"_playerChangeTeam"+this.gameId, (userId, newTeamNr) => this.changeTeam(userId, newTeamNr));
 		socket.on(this.gameController.gameType+"_setTeams"+this.gameId, amount => this.changeTeamAmount(amount) );
+		socket.on(this.gameController.gameType+"_togglePlayerReady"+this.gameId, (userId, isReady)  => this.togglePlayerReady(userId, isReady) );
 	}
 
 	deleteListeners(){
@@ -123,8 +124,10 @@ class PlayerHandler extends CommonGameComponent{
 		he may or may not have a custom character selection ("newCharacter") that will be stored in the player object.
 		we dont care here how he looks like ;-)
 		if there is a Character given, we will expect a characterHandler to be existent and ask him to store the custom looks.
+		Player will be set to "not ready"
 	**/
 	joinGame(userId, teamNr, newCharacter){
+		console.log("joinGame " + userId + " "+teamNr );
 		var playerAlreadyExisting=false;
 		var playerObject=undefined;
 		for(var i=0; i<this.gameController.gameState.players.length;i++){
@@ -132,11 +135,12 @@ class PlayerHandler extends CommonGameComponent{
 				playerAlreadyExisting=true;
 				this.gameController.gameState.players[i].team=teamNr;
 				this.gameController.gameState.players[i].selectedCharacter=newCharacter;
+				this.gameController.gameState.players[i].ready=false;
 				this.gameController.handleComponentSignal({source:this, sourceClass: this.constructor.name, type:"changeTeam", target:userId});
 			}
 		}
 		if(!playerAlreadyExisting){
-			var newPlayer={userId: userId, team:teamNr};
+			var newPlayer={userId: userId, team:teamNr, ready:false};
 			if (newCharacter!=undefined){
 				newPlayer.selectedCharacter=newCharacter;
 			}
@@ -149,7 +153,34 @@ class PlayerHandler extends CommonGameComponent{
 			this.gameController.characterHandler.storeCustomCharacter(userId,newCharacter);
 		}
 	}
+
+
+	checkAllPlayersReady(){
+		var allPlayersReady = true;
+		for(var i=0; i<this.gameController.gameState.players.length;i++){
+			if(!this.gameController.gameState.players[i].ready){
+				allPlayersReady = false;
+			}
+		}
+		//return allPlayersReady;
+		console.log("allPlayersReady: "+ allPlayersReady+ " amount players: "+ ( this.gameController.gameState.players.length>0));
+		if(allPlayersReady && this.gameController.gameState.players.length>0){
+			this.gameController.startGame();
+		}
+	}
 	
+	togglePlayerReady(userId, isReady){
+		console.log("togglePlayerReady: "+ userId+ " "+ isReady);
+		
+		for(var i=0; i<this.gameController.gameState.players.length;i++){
+			if(this.gameController.gameState.players[i].userId==userId){
+				this.gameController.gameState.players[i].ready = isReady;
+				this.checkAllPlayersReady();
+			}
+		}
+		this.gameController.refreshIntermediateGameInfo();
+		
+	}
 	/**
 		returns the amount of players in the given team
 	**/
