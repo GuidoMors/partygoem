@@ -11,8 +11,24 @@
 		"userId": 3,
 		"username": "Groomp",
 		"pw": "62358685",
-		"lastLoginTime": "2026-06-07T15:16:44.982Z",
-		"socketId": "RVaZUAqmfhr8lCXDAAAh",
+		"lastLoginTime": "2026-06-07T15:31:25.779Z",
+		"socketId": "bZ3vIsvgDLfrjvFQAAA5",
 		"ip": "::ffff:127.0.0.1"
+	},
+	{
+		"userId": 4,
+		"username": "tester",
+		"pw": "205484ca",
+		"lastLoginTime": "2026-06-07T15:34:29.733Z",
+		"socketId": "08iabFxn1ACWifFvAABB",
+		"ip": "::1"
+	},
+	{
+		"userId": 5,
+		"username": "dunno",
+		"pw": "79907d2e",
+		"lastLoginTime": "2026-06-07T15:35:50.076Z",
+		"socketId": "_4Xf0o-TkmIFf2HqAABL",
+		"ip": "::1"
 	}
 ]
