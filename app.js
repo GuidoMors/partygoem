@@ -27,6 +27,8 @@ setupPartygoem();
 async function setupPartygoem() {
     LOCALIP = getLocalIPAddress();
     PORT = convertLocalIpToPORT(LOCALIP);
+    console.log("Determined Local IP: " + LOCALIP);
+    console.log("Derived Port from Local IP: " + PORT);
     PUBLICIP = await getPublicIPAddress();
     if (!PUBLICIP) {
         console.error('Could not retrieve public IP address.');
@@ -116,7 +118,7 @@ function getLocalIPAddress() {
     const interfaces = os.networkInterfaces();
     for (let name of Object.keys(interfaces)) {
         for (let iface of interfaces[name]) {
-            if (iface.family === 'IPv4' && !iface.internal) {
+            if (iface.family === 'IPv4' && !iface.internal && iface.address.startsWith("192")) {
                 return iface.address;
             }
         }

@@ -1,0 +1,28 @@
+must have:
+-every 30 secs the level increases by 1: the scoring you get per line increases and the game goes 1 tick faster (goal: even best player loses after 4 minutes)
+-clearing 4 rows at the same time should give bonus (compared to only 3/2/1 rows at a time)
+    -1 lines: 100 pt * level
+    -2 lines: 300 pt * level
+    -3 lines: 500 pt * level
+    -4 lines: 800 pt * level
+-UI for creating tetrys game looks weird
+
+-can start game without players
+-weird button (circle?) in tetrys to the right with score if game is not runnin (anymore)
+
+-phone connects they get a join button
+-clicking join button puts you in a new team and makes you show ready button on your phone
+-clicking ready button shows an unready button, but also shows a ready mark
+-when joined/readied you should be able to customize your color
+-if everyone clicks ready the game starts
+
+-ingame it doesnt shown the bar on the right of the chat
+-ingame it shows the name and the score of each player above their tetris
+
+-score list that shows top scorer
+
+nice to have:
+-QR code in create game lobby screen not needed (only leads to 404 party not found)
+-password not needed in create game lobby?
+-whos here doesnt work
+-when everyone is ready and game can start it shows a 5 second timer (people can still unready)

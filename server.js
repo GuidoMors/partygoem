@@ -171,6 +171,7 @@ static USERS_FILE_NAME="users.json";
 	refreshUser(socket, userId){
 		if (!this.isUserInGame(userId)){
 			// ????? Not sure what to do here, send user to 404?
+			console.log("????? Not sure what to do here, send user to 404?");
 		} else {		 
 			socket.join(this.getGameIdByUser(userId));
 			var gameRoom=this.getGameRoomById(this.getGameIdByUser(userId))
@@ -339,10 +340,10 @@ static USERS_FILE_NAME="users.json";
     doOnSuccessfulUserLogin(socket, userId, userName, gameroom_hash){
 		this.updateUserInfoOnLogin(socket, userId, userName);
 		this.io.to(socket.id).emit("userLoginSuccessful", userName, userId, gameroom_hash);
-		this.refreshUser(socket,userId);
 		var gameId = this.getGameIdByGameroomHash(gameroom_hash);
 		this.pushLogMessage("{0} has connected.",[userName],  false, false, gameId);
 		this.joinGame(socket, userId, gameId);
+		this.refreshUser(socket,userId);
 		//this should be joinGameRoom, there should then be a check on if it actually matches the player count etc,
     }
 
@@ -547,7 +548,12 @@ static USERS_FILE_NAME="users.json";
 		if (gameId > 0) {
 			this.io.to(gameId).emit('gameRoomUpdated', gameId, this.getGameRoomById(gameId), this.getSimpleListOfAllUsers());
 			var controller = this.getGameControllerByGameId(gameId);
-			controller.handleGameRoomChange(event);
+			if(controller !=null){
+				controller.handleGameRoomChange(event);
+			}
+			else{
+				console.log("WARNING/ISSUE: controller is null, couldnt find game id "+gameId + " for event "+ event);
+			}
 		}
 		this.io.to(0).emit('gameRoomsUpdated', this.gameRooms, this.getSimpleListOfAllUsers(), GAMES);
 	}
