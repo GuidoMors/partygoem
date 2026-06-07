@@ -10,6 +10,7 @@ var gameType="";
 var users=[]; // simple list of userId, username
 var gameRoom;
 var isLoggedIn=false;
+var isAdmin=false;
 
 socket.on('connect', () => refresh());
 
@@ -78,9 +79,11 @@ socket.on('validateGameroomHash', function(hash, validated) {
 });
 
 
-socket.on('joinedGameRoom', function(gameRoomId,newGameType) {
+socket.on('joinedGameRoom', function(gameRoomId,newGameType, isAdminUser) {
+	console.log("joinedGameRoom "+gameRoomId +  " " + newGameType+  " " + isAdminUser);
 	gameId=gameRoomId;
 	gameType=newGameType;
+	isAdmin = isAdminUser;
 	redirectPage();
 
 });
@@ -440,18 +443,34 @@ if (chatbox){
 function redirectPage(){
 	
 	var currentPage=window.location.href.substr(window.location.href.lastIndexOf("/")+1);
-	
-	//redirect to lobby if not already in lobby and gameId=0
-	if( gameId==0 && (currentPage!=="404.html")){	
-		redirectTo404();
+	console.log("currentPage: "+ currentPage + " gameId: " + gameId + " isAdmin: "+ isAdmin+ " "+ gameType);
+
+	if(isAdmin){
+		if (gameId == 0){	
+			if (!(currentPage=="" || currentPage=="/")){
+				window.location.href = "/";
+			}
+			
+		} else {
+			if (currentPage!=gameType){
+				console.log("redir admin to game")
+				window.location.href = `/${gameType}`;
+			}
+			
+		}
+	}
+	else{
+		if (currentPage=="login"){
+			//
+		} else if (gameId>0) {
+			if (currentPage!=gameType){
+				window.location.href = `/${gameType}`;
+			}
+		} else {
+			redirectTo404();
+		}
 	}
 
-	//redirect to gameType
-	else{
-		if( gameId>0 && gameType!==currentPage){
-			window.location.href = `/${gameType}`;
-		}	
-	}
 	refreshBrowserTabUserName();
 }
 

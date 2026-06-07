@@ -65,20 +65,20 @@ function createTeamDiv(playerListToDraw, team){
 function drawCharacterSelection(){
 
 	deleteGuiElement("characterSelectionDiv");
-	deleteGuiElement("startGameButton");
+	deleteGuiElement("readyButton");
 
 	if (isMeHost()){
-		// var startGameButton=document.createElement("button");
-		// startGameButton.setAttribute("id","startGameButton");
-		// startGameButton.innerHTML = "START";
-		// startGameButton.classList.add("startGameButton");
-		// startGameButton.classList.add("BigButton");
+		// var readyButton=document.createElement("button");
+		// readyButton.setAttribute("id","readyButton");
+		// readyButton.innerHTML = "START";
+		// readyButton.classList.add("readyButton");
+		// readyButton.classList.add("BigButton");
 
-		// startGameButton.addEventListener('click', function(event) {
+		// readyButton.addEventListener('click', function(event) {
 		// 	startGame();
 		// });		
 
-		// lobbyDiv.appendChild(startGameButton);	
+		// lobbyDiv.appendChild(readyButton);	
 
 		// var lessTeamsButton =document.createElement("button");
 		// lessTeamsButton.setAttribute("id","lessTeamsButton");
@@ -399,12 +399,15 @@ function drawGameLobby(){
 		});		
 		characterSelectionDiv.appendChild(leavePlayersButton);
 
-		var startGameButton=document.createElement("button");
-		startGameButton.setAttribute("id","startGameButton");
-		startGameButton.innerHTML = "START";
-		startGameButton.classList.add("startGameButton");
-		startGameButton.classList.add("BigButton");
-		lobbyDiv.appendChild(startGameButton);	
+		var readyButton=document.createElement("button");
+		readyButton.setAttribute("id","readyButton");
+		readyButton.innerHTML = "Ready";
+		readyButton.classList.add("readyButton");
+		readyButton.classList.add("BigButton");
+		readyButton.addEventListener('click', function(event) {
+		 	toggleReady();
+		 });		
+		lobbyDiv.appendChild(readyButton);	
 	}
 
 }
