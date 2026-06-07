@@ -1,12 +1,3 @@
-:root {
-	--themeblack:rgb(88, 86, 86);
-	--themesubblack:rgb(60, 60, 60);
-	--themewhite: rgb(220, 220, 220);
-	--themesubwhite: rgb(175, 175, 190);
-
-	--teamone:rgb(80, 80, 80);
-	--teamtwo: rgb(90, 90, 90);
-  }
 
   button, select {
 	border: 1px var(--themewhite) solid;
@@ -148,7 +139,6 @@ body {
     margin: 0 auto;
     width: fit-content;
 	font-family: 'bigfont';
-	color: var(--themewhite);
 	background-color: var(--themeblack);
 	text-align: center;
 	position:relative;
@@ -271,23 +261,16 @@ body {
 }
 
 .joinGameButton{
-	float: none;
-    display: block;
-    margin-left: -75px;
-    width: 150px;
-    height: 10%;
-    margin-top: 2%;
-    position: absolute;
-    top: 5%;
-	font-family: 'bigfont';
-	font-size: 45px;
-	left:50%;
-	min-height: 40px;
-	z-index:200;
-}
-
-.joinGameButton:hover{
-	color:var(--themeblack);
+	position: absolute;
+	float:right;
+	margin-right: 20%;
+	margin-top: 5%;
+	width: 20%;
+	height: 65px;
+	font-size: 22px;
+	min-width: 100px;
+	right: 0;
+	top: 75px;
 }
 
 .editCharacterButton{

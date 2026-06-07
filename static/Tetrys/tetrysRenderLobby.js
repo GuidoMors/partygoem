@@ -193,6 +193,7 @@ function renderLogo(){
 	var logoDiv=document.createElement("div");
 	logoDiv.setAttribute("id","gameLogoDiv");
 	logoDiv.classList.add("gameLogo");
+	logoDiv.classList.add("neongreen");
 	middle.appendChild(logoDiv);
 	
 	//var middle= document.getElementById("middle");
@@ -343,6 +344,10 @@ function drawGameLobby(){
 			joinGameButton.setAttribute("id","joinGameButton_"+i);
 			joinGameButton.innerHTML = "JOIN";
 			joinGameButton.classList.add("joinGameButton");
+			joinGameButton.classList.add("neonborder");
+			joinGameButton.classList.add("neonbutton");
+			joinGameButton.classList.add("neongreen");
+			  
 			if (!Tools.isElementInList(gameState.players,"userId",userId)){
 				joinGameButton.addEventListener('click', function(event) {
 					var newTeamNr=event.srcElement.id.replace("joinGameButton_","");
