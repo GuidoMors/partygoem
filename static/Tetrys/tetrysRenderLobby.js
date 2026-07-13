@@ -347,6 +347,7 @@ function drawGameLobby(){
 			joinGameButton.classList.add("neonborder");
 			joinGameButton.classList.add("neonbutton");
 			joinGameButton.classList.add("neongreen");
+			joinGameButton.style.zIndex=1000;
 			  
 			if (!Tools.isElementInList(gameState.players,"userId",userId)){
 				joinGameButton.addEventListener('click', function(event) {

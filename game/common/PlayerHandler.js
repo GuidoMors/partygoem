@@ -43,6 +43,7 @@ class PlayerHandler extends CommonGameComponent{
 	constructor(gameController,  io, gameId, teams) {  
 		super(gameController,  io, gameId);
 		this.teams=teams;
+		this.isPlayerOwnTeam = true; //added for tetrys as workaround
 	}	
 
 	defineServerListenersFor(socket){	
@@ -59,7 +60,36 @@ class PlayerHandler extends CommonGameComponent{
 		this.io.removeAllListeners([this.gameController.gameType+"_playerChangeTeam"+this.gameId]);
 		this.io.removeAllListeners([this.gameController.gameType+"_setTeams"+this.gameId]);
 	}
-
+	
+	printTeams(){
+		console.log("*** players/teams: ***");
+		for(var i=0; i<this.gameController.gameState.players.length;i++){
+					console.log("player: "+ (this.gameController.gameState.players[i].userId) + ", team: "+(this.gameController.gameState.players[i].team));
+				
+			}
+		console.log("*********************");
+		
+	}
+	
+	restructureTeamsIfEveryoneIsOnTheirOwn(){
+		console.log("restructureTeamsIfEveryoneIsOnTheirOwn");
+		this.printTeams();
+		if(this.isPlayerOwnTeam && !this.gameController.gameState.isRunning){
+			var teamsCounter=1;
+			for(var i=0; i<this.gameController.gameState.players.length;i++){
+				if(this.gameController.gameState.players[i].team != 0){
+					this.gameController.gameState.players[i].team=teamsCounter;
+					teamsCounter = teamsCounter+1;
+				}
+				
+			}
+			this.teams=teamsCounter;
+			
+			
+		}
+		this.printTeams();
+		
+	}
 	
 
 	/**
@@ -136,19 +166,21 @@ class PlayerHandler extends CommonGameComponent{
 				this.gameController.gameState.players[i].team=teamNr;
 				this.gameController.gameState.players[i].selectedCharacter=newCharacter;
 				this.gameController.gameState.players[i].ready=false;
+				this.restructureTeamsIfEveryoneIsOnTheirOwn();
 				this.gameController.handleComponentSignal({source:this, sourceClass: this.constructor.name, type:"changeTeam", target:userId});
 			}
 		}
 		if(!playerAlreadyExisting){
+			
 			var newPlayer={userId: userId, team:teamNr, ready:false};
 			if (newCharacter!=undefined){
 				newPlayer.selectedCharacter=newCharacter;
 			}
 			this.gameController.gameState.players.push(newPlayer);
+			this.restructureTeamsIfEveryoneIsOnTheirOwn();
 			this.gameController.handleComponentSignal({source:this, sourceClass: this.constructor.name, type:"joinPlayer", target:userId});
 			
 		}
-
 		if (newCharacter!=undefined && this.gameController.characterHandler!=undefined){
 			this.gameController.characterHandler.storeCustomCharacter(userId,newCharacter);
 		}
@@ -227,6 +259,7 @@ class PlayerHandler extends CommonGameComponent{
 				this.gameController.gameState.players.splice(i, 1);
 			}
 		}
+		this.restructureTeamsIfEveryoneIsOnTheirOwn();
 		this.gameController.handleComponentSignal({source:this, sourceClass: this.constructor.name, type:"leavePlayer", target:userId});
 	}
 

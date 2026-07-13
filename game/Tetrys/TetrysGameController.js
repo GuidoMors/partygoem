@@ -595,8 +595,8 @@ class TetrysGameController extends CommonGameController{
 		this.server.pushLogMessage("Game Over! with a score of !",[],  false, false,this.gameId);		
 
 				
-		setTimeout(function(){//new: since admin may not click "back to lobby after game ends, automatically finishGame after 10 secs"
-				finishGame();
+		setTimeout(() => {//new: since admin may not click "back to lobby after game ends, automatically finishGame after 10 secs"
+				this.finishGame();
 			}
 		,  10000);
 				
@@ -950,6 +950,7 @@ STATIC PART
 				
 				this.quickGameState.players[event.target] = null;
 			}
+			
 			if (!this.gameState.isRunning) {
 				this.giveGameStates();
 			}
