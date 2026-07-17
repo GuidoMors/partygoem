@@ -322,7 +322,8 @@ static USERS_FILE_NAME="users.json";
 				userId=this.users[i].userId;
 				userName=this.users[i].username;
 				if(pw_hash != this.users[i].pw ){
-					message="Something went wrong with your login attempt (hashing error).";
+					//message="Something went wrong with your login attempt (hashing error).";
+					message="Username already taken. Choose another one";
 				}
 			}
 		}

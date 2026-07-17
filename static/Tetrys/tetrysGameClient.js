@@ -500,6 +500,13 @@ function showControllerMode(on){
 			}
 		}
 	}
+	
+	var controllerScoreDiv = document.getElementById("controllerScore");
+	if (controllerScoreDiv){
+		
+		controllerScoreDiv.innerHTML=""+getMyCurrentScore();
+	}
+	
 
 	var switcherBoxes = document.querySelectorAll('.controllerSwitcherButton');
 	switcherBoxes.forEach(function(checkbox) {
@@ -507,6 +514,18 @@ function showControllerMode(on){
 	});
 
 }
+
+function getMyCurrentScore(){
+
+		var playerScoreObject = null;
+		for(var j in Object.keys(intermediateGameState.score.playerScore)){	
+			if(intermediateGameState.score.playerScore[j].userId == userId){
+				playerScoreObject=intermediateGameState.score.playerScore[j];
+			}
+		}
+		return playerScoreObject.score;
+}
+
 
 
 function drawGameScore(){
