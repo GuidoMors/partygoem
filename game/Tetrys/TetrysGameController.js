@@ -166,7 +166,7 @@ class TetrysGameController extends CommonGameController{
 			var amountFilled = [fill[1],fill[2],fill[3],fill[4]];
 			var blocks = score.amountBlocksSpawned;
 			var amountBlocks = [blocks.sticks, blocks.cube, blocks.L, blocks.P, blocks.Z, blocks.rZ, blocks.wasd];
-			playerscore.push([score.userId, score.won, score.diedAt, score.blocksPlaced, score.rowsFilled, amountFilled, amountBlocks]);
+			playerscore.push([score.userId, score.won, score.diedAt, score.blocksPlaced, score.rowsFilled, amountFilled, amountBlocks, score.score]);
 		}
 		reduced[3] = playerscore;
 		reduced[4] = l.isPaused;
@@ -296,7 +296,8 @@ class TetrysGameController extends CommonGameController{
 																	blocksPlaced:0, 
 																	rowsFilled:0,
 																	amountFilled:{1:0, 2:0,3:0,4:0},
-																	amountBlocksSpawned:{}
+																	amountBlocksSpawned:{},
+																	score: 0
 																	};
 																	
 			for(var j=0;j<Object.values(TetrysGameController.blocks).length;j++){
@@ -375,11 +376,18 @@ class TetrysGameController extends CommonGameController{
 	attemptPlayerAction(userId){
 		for(var i=0;i<this.gameState.players.length;i++){
 				if(this.gameState.players[i].userId==userId){
-					this.quickGameState.players[userId].direction=((this.quickGameState.players[userId].direction+1) %4);
+					var oldDirection= this.quickGameState.players[userId].direction;
+					var newDirection = oldDirection >0 ? (oldDirection -1) :  3;
+					console.log("newdir" + newDirection);
+					//this.quickGameState.players[userId].direction=((this.quickGameState.players[userId].direction-1) %4);
+					//	if(this.quickGameState.players[userId].direction<0){
+					//this.quickGameState.players[userId].direction=4;
+					//}
+					this.quickGameState.players[userId].direction=newDirection;
 					this.setBlockCoordsForPlayer(userId);
 					var collisionObjects=this.isColliding(userId);
 					if(collisionObjects.length>0){
-						this.quickGameState.players[userId].direction=Math.abs((this.quickGameState.players[userId].direction-1) %4);					
+						this.quickGameState.players[userId].direction=oldDirection;					
 						this.setBlockCoordsForPlayer(userId);
 					}
 				}
@@ -567,13 +575,17 @@ class TetrysGameController extends CommonGameController{
 	
 	
 	endGame(){
-
+		var currentTimer = this.intermediateGameState.gameTimer;
 		this.stopGame();
 		for(var i=0;i<this.gameState.players.length;i++){
 			var userId=this.gameState.players[i].userId;
 			var isAlive=this.canSpawnNewBlockForPlayer(userId);
 			this.intermediateGameState.score.playerScore[userId].isAlive=isAlive;
+			if(this.intermediateGameState.score.playerScore[userId].diedAt== 0 && !isAlive){
+				this.intermediateGameState.score.playerScore[userId].diedAt =currentTimer;
+			}
 		}
+		/*
 		for(var i=1;i< this.playerHandler.teams;i++){
 			var teamPlayers=this.playerHandler.getPlayersForTeam(i);
 			var hasWon=false;
@@ -588,17 +600,28 @@ class TetrysGameController extends CommonGameController{
 		for(var i=0;i<this.gameState.players.length;i++){
 			var userId=this.gameState.players[i].userId;
 			this.intermediateGameState.score.playerScore[userId].won=this.intermediateGameState.score.teamScore[this.playerHandler.getTeamOfPlayer(userId)].won;
+		}*/
+		var highestScore = 0;
+		var winningUserId=this.gameState.players[0].userId;
+		for(var i=0; i< this.gameState.players.length;i++){
+			var currentScore=this.intermediateGameState.score.playerScore[userId].score;
+			var currentUserId = this.gameState.players[0].userId;
+			if(currentScore>highestScore){
+				winningUserId=currentUserId;
+				highestScore = currentScore;
+			}
 		}
 		
 		this.refreshIntermediateGameInfo();
 		this.refreshQuickGameInfo();
-		this.server.pushLogMessage("Game Over! with a score of !",[],  false, false,this.gameId);		
-
+		this.server.pushLogMessage("Game Over! {0} won with a score of {1}!",[this.server.getUserNameByUserId(winningUserId),highestScore],  false, false,this.gameId);		
+		console.log(this.intermediateGameState.score);
+		console.log(JSON.stringify(this.intermediateGameState.score));
 				
 		setTimeout(() => {//new: since admin may not click "back to lobby after game ends, automatically finishGame after 10 secs"
 				this.finishGame();
 			}
-		,  10000);
+		,  20000);
 				
 	}
 		

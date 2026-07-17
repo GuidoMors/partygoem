@@ -53,7 +53,7 @@ function createTeamDiv(playerListToDraw, team){
 	playerPics.classList.add("playerPicsLobby");
 	for(var i=0;i<playerListToDraw.length;i++){
 		if (playerListToDraw[i].team == team) {
-			var characterDivImage= createCharacterImageDivPlayer(i, getUserNameById(playerListToDraw[i].userId), playerListToDraw[i].selectedCharacter);
+			var characterDivImage= createCharacterImageDivPlayer(i, getUserNameById(playerListToDraw[i].userId), playerListToDraw[i].selectedCharacter,playerListToDraw[i].ready);
 			playerPics.appendChild(characterDivImage);
 		}
 		
@@ -167,7 +167,7 @@ function createCharacterImageDivDraft(id,name,selectedCharacter){
 	
 	
 	
-function createCharacterImageDivPlayer(id, name,selectedCharacter){
+function createCharacterImageDivPlayer(id, name,selectedCharacter, isReady){
 	
 	var characterDivImage = document.createElement("div");
 	characterDivImage.setAttribute("id","characterDivImage_"+id);
@@ -181,6 +181,12 @@ function createCharacterImageDivPlayer(id, name,selectedCharacter){
 	characterName.classList.add("playerNameTag");
 	characterName.innerHTML=name;
 	characterDivImage.appendChild(characterName);
+	
+	var characterReady=document.createElement("span"); 
+	//characterReady.setAttribute("id","playerReadyTag_"+id);
+	characterReady.classList.add("playerNameTag");
+	characterReady.innerHTML=isReady? "is ready" : "is not ready";
+	characterDivImage.appendChild(characterReady);
 	
 	
 	
@@ -325,6 +331,18 @@ function drawGameLobby(){
 	var middle= document.getElementById("middle");
 	middle.appendChild(lobbyDiv);
 	middle.style.display = "block";
+	
+	if (! isMeHost()){
+			var joinGameButton=document.createElement("button");
+			joinGameButton.setAttribute("id","joinGameButton");
+			joinGameButton.innerHTML = "JOIN";
+			joinGameButton.classList.add("joinGameButton");
+			joinGameButton.classList.add("neonborder");
+			joinGameButton.classList.add("neonbutton");
+			joinGameButton.classList.add("neongreen");
+			joinGameButton.style.zIndex=1000;
+			lobbyDiv.appendChild(joinGameButton);
+	}
 
 	for(var i=1;i<gameSettings.teams;i++){
 		var teamblock=document.createElement("div");
@@ -340,27 +358,17 @@ function drawGameLobby(){
 		}
 
 		if (! isMeHost()){
-			var joinGameButton=document.createElement("button");
-			joinGameButton.setAttribute("id","joinGameButton_"+i);
-			joinGameButton.innerHTML = "JOIN";
-			joinGameButton.classList.add("joinGameButton");
-			joinGameButton.classList.add("neonborder");
-			joinGameButton.classList.add("neonbutton");
-			joinGameButton.classList.add("neongreen");
-			joinGameButton.style.zIndex=1000;
 			  
 			if (!Tools.isElementInList(gameState.players,"userId",userId)){
+				joinGameButton.style.display="block";
 				joinGameButton.addEventListener('click', function(event) {
-					var newTeamNr=event.srcElement.id.replace("joinGameButton_","");
+					var newTeamNr=1;
 					joinGame(newTeamNr, getMySelectedCharacter());
 				});		
-			}else {
-				joinGameButton.addEventListener('click', function(event) {
-					var newTeamNr=event.srcElement.id.replace("joinGameButton_","");
-					changeTeam(newTeamNr); // just "i" didnt work, always defaulted i 3.
-				});
 			}
-			teamblock.appendChild(joinGameButton);
+			else{
+				joinGameButton.style.display="none";
+			}
 		}
 
 		var playerPicsContainer=document.createElement("div");
@@ -390,7 +398,7 @@ function drawGameLobby(){
 		var leavePlayersButton=document.createElement("button");
 		leavePlayersButton.setAttribute("id","leavePlayersButton");
 		if (GAME_NAME == "Tetrys"){
-			leavePlayersButton.innerHTML = "Pick Color";
+			leavePlayersButton.innerHTML = "Leave";
 		} else {
 			leavePlayersButton.innerHTML = "Edit Character";
 		}
@@ -402,11 +410,13 @@ function drawGameLobby(){
 
 		var readyButton=document.createElement("button");
 		readyButton.setAttribute("id","readyButton");
-		readyButton.innerHTML = "Ready";
+		readyButton.innerHTML = isPlayerReady ? "Unready" : "Ready";
 		readyButton.classList.add("readyButton");
 		readyButton.classList.add("BigButton");
 		readyButton.addEventListener('click', function(event) {
 		 	toggleReady();
+		readyButton.innerHTML = isPlayerReady ? "Unready" : "Ready";
+			
 		 });		
 		lobbyDiv.appendChild(readyButton);	
 	}

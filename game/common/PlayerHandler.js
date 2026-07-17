@@ -210,7 +210,7 @@ class PlayerHandler extends CommonGameComponent{
 				this.checkAllPlayersReady();
 			}
 		}
-		this.gameController.refreshIntermediateGameInfo();
+		this.gameController.giveGameStates();
 		
 	}
 	/**

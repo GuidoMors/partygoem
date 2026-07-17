@@ -121,6 +121,13 @@ function doMoreOnReceiveGameState(){
 			}
 		})
 	}
+	
+	for(var i=0; i < gameState.players.length;i++){
+		if(gameState.players[i].userId == userId)
+		{
+			isPlayerReady = gameState.players[i].ready;
+		}
+	}
 }
 
 
@@ -308,6 +315,7 @@ function doOnReceiveIntermediateGameState(l){
 				diedAt: score[2],
 				blocksPlaced: score[3],
 				rowsFilled: score[4],
+				score: score[7],
 				amountFilled:{
 					1: score[5][0],
 					2: score[5][1],
@@ -349,6 +357,7 @@ function doOnReceiveIntermediateGameState(l){
 		}
 			
 	}
+	console.log("score "+ JSON.stringify(intermediateGameState.score));
 }
 
 
