@@ -48,10 +48,10 @@ class TetrysGameController extends CommonGameController{
 		this.gameSettings = {
 			stepSize: 1, 
 			updateTimer: 14, //Fps xd
-			baseSpeed:1000,
-			speedPerDifficulty:0.20,
-			maxDifficulty:8,
-			difficultyTimer:40,
+			baseSpeed:1100,
+			speedPerDifficulty:0.30,
+			maxDifficulty:20,
+			difficultyTimer:30,
 			colsPerPlayer: 10,
 			tileSizeW: TILESIZEWIDTH, 
 			tileSizeH: TILESIZEHEIGHT,
@@ -59,7 +59,7 @@ class TetrysGameController extends CommonGameController{
 			amountBaseRows: 22,
 			movementDelaySize: 3, //the wait in fps before a hold down of the button triggers fast movement
 			scoreMultiplierPerDifficulty: 0.2,
-			scorePerRows: {1:100, 2:250, 3:400, 4:700}
+			scorePerRows: {1:100, 2:300, 3:500, 4:800}  //see https://tetris.wiki/Scoring
 		};
 
 		this.controllerModeList=[],
@@ -170,6 +170,7 @@ class TetrysGameController extends CommonGameController{
 		}
 		reduced[3] = playerscore;
 		reduced[4] = l.isPaused;
+		reduced[5] = this.gameState.difficulty;
 
 		this.io.to(this.gameId).emit(this.gameType+"_receiveIntermediateGameState",reduced);
 		
@@ -240,8 +241,9 @@ class TetrysGameController extends CommonGameController{
 	
 	
 	checkTic(){
-		if(  Math.floor(this.intermediateGameState.gameTimer/this.gameSettings.difficultyTimer  ) > (this.gameState.difficulty)){
-			this.gameState.difficulty=( Math.floor(this.intermediateGameState.gameTimer / this.gameSettings.difficultyTimer) );
+		console.log("checkTic "+ this.gameState.difficulty + " "+ this.intermediateGameState.gameTimer + " " + (this.intermediateGameState.gameTimer/this.gameSettings.difficultyTimer) + " " + (Math.floor(this.intermediateGameState.gameTimer / this.gameSettings.difficultyTimer))); 
+		if(  Math.floor(this.intermediateGameState.gameTimer/this.gameSettings.difficultyTimer  )+1 > (this.gameState.difficulty)){
+			this.gameState.difficulty=( Math.floor(this.intermediateGameState.gameTimer / this.gameSettings.difficultyTimer) )+1;
 		}
 		var currentTime = (new Date()).getTime();
 		var timeDifference = currentTime - this.gameSettings.lastTicTimer;

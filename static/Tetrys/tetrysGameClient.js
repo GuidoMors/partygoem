@@ -209,6 +209,24 @@ function drawPostGame(){
 		var scoreContainer = document.createElement("div");
 		scoreContainer.setAttribute("id","scoreContainer");
 		scoreContainer.classList.add("scoreContainer");
+		
+		var scoresSorted = Object.values(intermediateGameState.score.playerScore).sort((a, b) => b.score - a.score);
+		
+		 scoreContainer.innerHTML = "";
+		// Add each player
+		scoresSorted.forEach((player, index) => {
+			  const div = document.createElement("div");
+			  div.style.color = "white";
+			  div.innerHTML = `
+				<span>${index + 1}.</span>
+				<span>${getUserNameById(player.userId)}</span>
+				<span>${player.score}</span>
+				<span>${player.diedAt}s</span>
+			  `;
+			scoreContainer.appendChild(div);
+		});
+
+		
 	
 		postgame.appendChild(scoreContainer);
 		/*
@@ -336,6 +354,7 @@ function doOnReceiveIntermediateGameState(l){
 	}
 
 	intermediateGameState.isPaused = l[4];
+	intermediateGameState.difficulty = l[5];
 
 	if(intermediateGameState.isPaused){
 		drawGamePause();
@@ -357,7 +376,7 @@ function doOnReceiveIntermediateGameState(l){
 		}
 			
 	}
-	console.log("score "+ JSON.stringify(intermediateGameState.score));
+	//console.log("score "+ JSON.stringify(intermediateGameState.score));
 }
 
 
@@ -414,6 +433,31 @@ function drawMap(){
 				context.fillStyle =Tools.RGBToHex(gameState.players[i].selectedCharacter.color);
 				context.fillRect((x*w)+borderThickness, (y*h)+borderThickness, w-(borderThickness*2), h-(borderThickness*2));
 		}
+	}
+	
+	//draw player name and score:
+	
+	for(var i=0;i<gameState.players.length;i++){	
+		var userId=gameState.players[i].userId;
+		var userName=getUserNameById(userId);
+		var playerScoreObject = null;
+		//console.log(intermediateGameState);
+		//console.log(userId + " "+ JSON.stringify( intermediateGameState.score.playerScore));
+		//console.log(intermediateGameState.score.playerScore);
+		for(var j in Object.keys(intermediateGameState.score.playerScore)){	
+		//console.log( (intermediateGameState.score.playerScore[j].userId == userId));
+			if(intermediateGameState.score.playerScore[j].userId == userId){
+				playerScoreObject=intermediateGameState.score.playerScore[j];
+			}
+		}
+		var userScore =playerScoreObject!=null? playerScoreObject.score : 0;
+		var startingPosX = gameState.players[i].startingPos.x;
+		context.font = "50px serif";
+		context.fillStyle ="white";
+		context.fillText(userName, startingPosX, 50);
+		context.fillText(userScore, startingPosX+600, 50);
+		
+		
 	}
 		
 	var gridH=gameState.map.grid.length;
@@ -475,13 +519,19 @@ function drawGameScore(){
 	var timertext = Tools.getTimeAsString(intermediateGameState.gameTimer);
 	gametimer.innerHTML = timertext;
 
+	var diffBlock = document.createElement("div");
+	console.log(intermediateGameState.difficulty);
+	diffBlock.innerHTML = intermediateGameState.difficulty;
+	diffBlock.classList.add("teamblock"+1);
+	log.appendChild(diffBlock);
+/*
 	for (var i = 1; i<gameSettings.teams;i++){
 		var teamblock = document.createElement("div");
 		teamblock.innerHTML = intermediateGameState.score.teamScore[i].score;
 		teamblock.classList.add("teamblock"+i);
 		log.appendChild(teamblock);
 	}
-
+*/
 }
 /*
 function toggleControllerOption(){
