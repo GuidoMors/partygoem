@@ -389,7 +389,7 @@ function drawGameLobby(){
 			oneHighscoreDiv.innerHTML = `
 					<span>${i+1}.</span>
 					<span>${getUserNameById(gameState.highScores[i].userId)}</span>
-					<span>${gameState.highScores[i].score}</span>
+					<span class='spanscore'>${gameState.highScores[i].score}</span>
 				`;
 			if (i == 0){
 				oneHighscoreDiv.classList.add("firstplace");

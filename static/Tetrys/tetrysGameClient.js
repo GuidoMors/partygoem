@@ -452,17 +452,12 @@ function drawMap(){
 	var windowH=window.innerHeight;
 
 	var gridRatio= gridW/gridH;
-	
-	if(gridW/windowW > gridH/windowH){
-		canvas.style.width=windowW+"px";
-		canvas.style.height=(windowW*(1/gridRatio))+"px";
-		canvas.style.marginTop=Math.floor((windowH-(windowW*(1/gridRatio)))/2)+"px";			
-	}
-	else{
-		canvas.style.height=windowH+"px";
-		canvas.style.width=(windowH*(gridRatio))+"px";
-		canvas.style.marginLeft=Math.floor((windowW-(windowH*(gridRatio)))/2)+"px";
-	}
+
+	canvas.style.width=windowW+"px";
+	canvas.style.height=(windowW*(1/gridRatio))+"px";
+	canvas.style.marginTop=Math.floor((windowH-(windowW*(1/gridRatio)))/2)+"px";
+		
+
 }
 
 function showControllerMode(on){
@@ -537,7 +532,7 @@ function drawGameScore(){
 			<span>HIGHSCORE:</span>
 			<br>
 			<span>${getUserNameById(gameState.highScores[0].userId)}</span>
-			<span>${gameState.highScores[0].score}</span>
+			<span class='spanscore'>${gameState.highScores[0].score}</span>
 		`;
 		oneHighscoreDiv.classList.add("firstplace");
 		oneHighscoreDiv.classList.add("neonwhite");
@@ -553,7 +548,7 @@ function drawGameScore(){
 		oneHighscoreDiv.innerHTML = `
 			<span>${i+1}.</span>
 			<span>${getUserNameById(playerScores[i].userId)}</span>
-			<span>${playerScores[i].score}</span>
+			<span class='spanscore'>${playerScores[i].score}</span>
 		`;
 		for (var j=0; j<gameState.players.length;j++) {
 			if (gameState.players[j].userId == playerScores[i].userId){

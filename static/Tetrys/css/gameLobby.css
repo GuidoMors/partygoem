@@ -11,7 +11,7 @@
   }
   
   button:disabled, select:disabled, button:disabled:hover {
-	background-color: var(--themedisabled);
+	opacity: .2;
   }
   
   button:hover, select:hover {
@@ -534,6 +534,16 @@ body {
     box-sizing: border-box;
     color: white;
 	min-height: 450px;
+    box-sizing: border-box;
+}
+
+.highscores div {
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.highscores .spanscore {
+	float: right;
 }
 
 @media (max-width: 1000px) {

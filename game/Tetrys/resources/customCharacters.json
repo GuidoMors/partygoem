@@ -74,9 +74,49 @@
 		"userId": 9,
 		"selectedCharacter": {
 			"color": [
-				98,
-				97,
-				172
+				255,
+				255,
+				0
+			]
+		}
+	},
+	{
+		"userId": 11,
+		"selectedCharacter": {
+			"color": [
+				112,
+				135,
+				116
+			]
+		}
+	},
+	{
+		"userId": 13,
+		"selectedCharacter": {
+			"color": [
+				222,
+				57,
+				30
+			]
+		}
+	},
+	{
+		"userId": 12,
+		"selectedCharacter": {
+			"color": [
+				211,
+				87,
+				254
+			]
+		}
+	},
+	{
+		"userId": 14,
+		"selectedCharacter": {
+			"color": [
+				109,
+				179,
+				164
 			]
 		}
 	}
