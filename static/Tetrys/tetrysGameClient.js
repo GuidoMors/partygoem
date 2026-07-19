@@ -453,14 +453,13 @@ function drawMap(){
 
 	var gridRatio= gridW/gridH;
 
-	if(gridW/windowW < gridH/windowH){
+	if(gridW/windowW > gridH/windowH){
 
 		canvas.style.width=windowW+"px";
 		canvas.style.height=(windowW*(1/gridRatio))+"px";
 		canvas.style.marginTop=Math.floor((windowH-(windowW*(1/gridRatio)))/2)+"px";
 		
-	}
-	else{
+	}else{
 		canvas.style.height=windowH+"px";
 		canvas.style.width=(windowH*(gridRatio))+"px";
 		canvas.style.marginLeft=Math.floor((windowW-(windowH*(gridRatio)))/2)+"px";
