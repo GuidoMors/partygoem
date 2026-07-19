@@ -343,6 +343,27 @@ function drawGameLobby(){
 			joinGameButton.style.zIndex=1000;
 			lobbyDiv.appendChild(joinGameButton);
 	}
+	
+	////draw highscore if exists
+	var highscorediv=document.createElement("div");
+	highscorediv.style.display="block";
+	
+	for (var i=0; i<gameState.highScores.length;i++){
+		var oneHighscoreDiv = document.createElement("div");
+		oneHighscoreDiv.innerHTML= gameState.highScores[i];
+		 oneHighscoreDiv.innerHTML = `
+				<span>${i+1}.</span>
+				<span>${getUserNameById(gameState.highScores[i].userId)}</span>
+				<span>${gameState.highScores[i].score}</span>
+				<span>${gameState.highScores[i].diedAt}s</span>
+				<span>${gameState.highScores[i].matchId}</span>
+				<span>${gameState.highScores[i].timestamp}</span>
+			  `;
+		highscorediv.appendChild(oneHighscoreDiv);
+		
+	}
+	lobbyDiv.appendChild(highscorediv);
+	console.log(gameState);
 
 	for(var i=1;i<gameSettings.teams;i++){
 		var teamblock=document.createElement("div");

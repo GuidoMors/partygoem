@@ -1,0 +1,27 @@
+{
+
+  "playerScore": {
+    "6": {
+      "userId": 6,
+      "diedAt": 156,
+      "score": 1550
+    },
+	    "2": {
+      "userId": 2,
+      "diedAt": 156,
+      "score": 1650
+    },
+	    "3": {
+      "userId": 3,
+      "diedAt": 156,
+      "score": 5650
+    },
+	    "5": {
+      "userId": 5,
+      "diedAt": 156,
+      "score": 1350
+    }
+  },
+  "matchId": "20260719090725",
+  "timestamp": "2026-07-19T09:07:25.337Z"
+}

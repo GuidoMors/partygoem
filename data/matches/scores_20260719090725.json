@@ -1,0 +1,45 @@
+{
+  "teamScore": {
+    "1": {
+      "won": false,
+      "teamNr": 1,
+      "score": 4000,
+      "blocksPlaced": 80,
+      "rowsFilled": 23,
+      "amountFilled": {
+        "1": 15,
+        "2": 4,
+        "3": 0,
+        "4": 0
+      }
+    }
+  },
+  "playerScore": {
+    "6": {
+      "userId": 6,
+      "won": false,
+      "diedAt": 156,
+      "blocksPlaced": 80,
+      "rowsFilled": 23,
+      "amountFilled": {
+        "1": 15,
+        "2": 4,
+        "3": 0,
+        "4": 0
+      },
+      "amountBlocksSpawned": {
+        "stick": 8,
+        "cube": 14,
+        "L": 12,
+        "P": 7,
+        "Z": 14,
+        "rZ": 15,
+        "wasd": 10
+      },
+      "score": 4000,
+      "isAlive": false
+    }
+  },
+  "matchId": "20260719090725",
+  "timestamp": "2026-07-19T09:07:25.337Z"
+}

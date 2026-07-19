@@ -4,6 +4,9 @@ var CharacterHandler=require("./../common/CharacterHandler.js");
 var CommonGameController=require("./../common/CommonGameController.js");
 var Tools = require('./../../static/common/tools.js');	
 var fs = require("fs");
+var path = require("path");
+
+var SCORE_PATH="./data/matches"
 
 var GAME_NAME="Tetrys";
 var NONE="none";
@@ -20,6 +23,8 @@ class TetrysGameController extends CommonGameController{
 		this.characterHandler=new CharacterHandler(this,io, gameId, defaultCustomCharacter, {});
 	
 		this.hash = hash;
+		
+		var lastHighScores = this.loadHighScores();
 	
 		this.gameState={
 			players:[], 
@@ -33,6 +38,7 @@ class TetrysGameController extends CommonGameController{
 			lastTicTimer: 0,
 			map:{id:0, name:"", grid:[[]]},
 			hash: hash,
+			highScores : lastHighScores
 		};	
 
 
@@ -71,6 +77,9 @@ class TetrysGameController extends CommonGameController{
 
 	//should be called each time you want a fresh game
 	freshVariables(){
+		
+		var lastHighScores = this.loadHighScores();
+		this.gameState.highScores=lastHighScores;
 		this.gameState.isRunning = false;
 		this.gameState.difficulty = 1;
 		this.gameState.currentGamePhase = 0;
@@ -603,6 +612,11 @@ class TetrysGameController extends CommonGameController{
 			var userId=this.gameState.players[i].userId;
 			this.intermediateGameState.score.playerScore[userId].won=this.intermediateGameState.score.teamScore[this.playerHandler.getTeamOfPlayer(userId)].won;
 		}*/
+		
+		//write all scores at the end to separate match log file:
+		this.writeScoresToFile();
+		
+		
 		var highestScore = 0;
 		var winningUserId=this.gameState.players[0].userId;
 		for(var i=0; i< this.gameState.players.length;i++){
@@ -1024,7 +1038,111 @@ STATIC PART
 		clearInterval(this.gameTimeTimer);
 	
 	}
-			
+	
+	
+	
+	
+	writeScoresToFile(){
+		var current_ts = new Date().toISOString();
+		var current_ts_str = current_ts.replace(/[-:T]/g, "").slice(0, 14);
+		this.intermediateGameState.score.matchId=current_ts_str;
+		this.intermediateGameState.score.timestamp=current_ts;
+		var json_data = JSON.stringify(this.intermediateGameState.score, null, 2);
+		var new_file_name = SCORE_PATH+"/scores_"+current_ts_str+".json";
+
+		fs.writeFileSync(new_file_name, json_data, "utf8");
+		
+	}
+	readAllScoreFiles(){
+		var scores = [];
+
+		if (!fs.existsSync(SCORE_PATH)) {
+			return scores;
+		}
+
+		fs.readdirSync(SCORE_PATH)
+			.filter(file => file.endsWith(".json"))
+			.forEach(file => {
+				try {
+					const data = fs.readFileSync(
+						path.join(SCORE_PATH, file),
+						"utf8"
+					);
+
+					if (data.trim().length === 0) {
+						console.warn(`Skipping empty file: ${file}`);
+						return;
+					}
+
+					scores.push(JSON.parse(data));
+
+				} catch (err) {
+					console.warn(`Skipping invalid score file: ${file}`, err.message);
+				}
+			});
+		return scores;
+	}
+	/*old one that considers every entry:
+	
+	loadHighScores(){
+		var scoresFile = this.readAllScoreFiles();
+		console.log(scoresFile);
+		var allScores = [];
+		if (scoresFile !=null && scoresFile.length >0){
+			for (var i=0; i < scoresFile.length;i++){
+				var match = scoresFile[i];
+				console.log(match);
+				console.log(match.playerScore);
+				for (var [userId, playerScore] of Object.entries(match.playerScore)) {
+					allScores.push({
+						userId,
+						score: playerScore.score,
+						diedAt: playerScore.diedAt,
+						matchId: match.matchId,
+						timestamp: match.timestamp
+					});
+				}
+			}
+		}
+		
+		var highscores = allScores
+			.sort((a, b) => b.score - a.score)
+			.slice(0, 10);
+		console.log("highscores:");
+		console.log(highscores);
+		return highscores;
+	}
+	*/
+		
+	loadHighScores(){
+		var bestScorePerPlayer = {};
+		var scoresFile = this.readAllScoreFiles();
+		console.log(scoresFile);
+		if (scoresFile !=null && scoresFile.length >0){
+			for (var i=0; i < scoresFile.length;i++){
+				var match = scoresFile[i];
+				for (var [userId, playerScore] of Object.entries(match.playerScore)) {
+					var currentBest = bestScorePerPlayer[userId];
+					if (!currentBest || playerScore.score > currentBest.score) {
+						bestScorePerPlayer[userId]={
+							userId,
+							score: playerScore.score,
+							diedAt: playerScore.diedAt,
+							matchId: match.matchId,
+							timestamp: match.timestamp
+						};
+					}
+				}
+			}
+		}
+		
+		var highscores = Object.values(bestScorePerPlayer)
+			.sort((a, b) => b.score - a.score)
+			.slice(0, 10);
+		console.log("highscores:");
+		console.log(highscores);
+		return highscores;
+	}
 	
 }
 
