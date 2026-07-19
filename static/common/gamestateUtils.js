@@ -41,7 +41,24 @@ function isMePlayer(){
 
 //returns true if this browser is host and false otherwise
 function isMeHost(){
+	if (!gameState){
+		return isHost;
+	}
 	return gameState.host==userId;
+}
+
+
+//returns true if this browser is host and false otherwise
+function isMeObserver(){
+	if (!gameState){
+		return true;
+	}
+	for(var i=0;i<gameState.players.length;i++){
+		if(gameState.players[i].userId==userId){
+			return gameState.players[i].team == 0;
+		}
+	}
+	return true;
 }
 
 //this browser asks to join the game with the selected character. myCharacter is a game Specific variable!!

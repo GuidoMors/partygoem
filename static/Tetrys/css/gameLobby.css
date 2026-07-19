@@ -27,14 +27,31 @@
 body {
 	background-color: var(--themeblack);
 	margin: 0;
+	position: relative;
+	overflow-y: visible;
   }
 
 .lobbyDiv {
 	background-color: var(--themeblack);
-	height: 80%;
+	height: auto;
 	border-radius: 10px;
-	position: absolute;
-    top: 17%;
+	position: relative;
+	width: 75%;
+    float: left;
+    margin: 0;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    display: grid;
+	margin-top: 5%;
+}
+
+.buttonDiv {
+	display: block;
+	position: relative;
+	grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    display: grid;
+	gap: 25px;
+	padding-top: 90px;
+	width: 100%;
 }
 
 #right {
@@ -54,9 +71,18 @@ body {
 
 .qrDiv {
 	position: absolute;
-	left:40px;
-	top:50px;
-	margin-top: 0;
+    z-index: 99999;
+    top: calc(100% - 270px) !important;
+	min-width: 175px;
+    min-height: 175px;
+}
+
+.qrDiv.neonwhite.neonborder:not(:has(img)) {
+    display: none;
+}
+
+.neonwhite.neonborder:not(:has(img))::after {
+    display: none;
 }
 
 .themeRed {
@@ -137,7 +163,8 @@ body {
 }
 
 .gameLogo {
-	height: 9%;
+	height: min(30vh, .6em);
+	font-size: min(27vw, 30vh);
     margin: 0 auto;
     width: fit-content;
 	font-family: 'bigfont';
@@ -146,10 +173,19 @@ body {
 	position:relative;
 	display: flex;
     align-items: flex-end;
-	height:15%;
 	padding: 0;
 	margin-top: 2%;
 	z-index:10;
+}
+
+.firstplace {
+	padding: 6px;
+	padding-right: 10px;
+	padding-left: 10px;
+    margin-bottom: 35px;
+    font-size: 20px;
+    position: relative;
+	width: fit-content;
 }
 
 .gameLogo img{
@@ -163,8 +199,6 @@ body {
 }
 
 .playerPicsContainer{
-    overflow-x: auto;
-    overflow-y: hidden;
     height: 100%;
     width: 100%;
 	position:relative;
@@ -185,7 +219,7 @@ body {
 .customImageDisplay {
 	display:block;
 	float:left;
-	margin-top: 2px;
+	margin-top: -100px;
 	height: 100px;
 	width: 180px;
     position: relative;
@@ -210,22 +244,24 @@ body {
 	margin: 0 auto;
 }
 
+.playerReadyTag {
+    text-align: center;
+    width: fit-content;
+    display: flex;
+    padding: 3px;
+    margin: 0 auto;
+	position: relative;
+	top: 15px;
+}
+
 
 .myPlayerNameTag{
-	font-family:'smallfont';
-	font-weight: bold;
-	text-align:center;
-	position:absolute;
-	bottom:0;
-	margin:0 auto;
-	margin-bottom: 5%;
-	margin-right: 15%;
-	width: 85%;
+	color: var(--themegreen) !important;
 }
 
 .playerNameTag{
 	font-family:'smallfont';
-	font-weight: bold;
+	font-weight: 100;
 	text-align:center;
 	position: relative;
 	float: left;
@@ -263,26 +299,30 @@ body {
 }
 
 .joinGameButton{
-	position: absolute;
-	float:right;
-	margin-right: 20%;
-	margin-top: 5%;
-	width: 20%;
-	height: 65px;
-	font-size: 22px;
-	min-width: 100px;
-	right: 0;
-	top: 75px;
+    display: block;
+    position: relative;
+    margin: 0 auto;
+    height: 65px;
+    font-size: 22px;
+    min-width: 100px;
 }
 
-.editCharacterButton{
-	position: absolute;
-    float: none;
+.readyButton{
     display: block;
-    height: 40%;
-    top: 5%;
-    width: 100%;
-    background-color: var(--themesubblack);
+    position: relative;
+    margin: 0 auto;
+    height: 65px;
+    font-size: 22px;
+    min-width: 100px;
+}
+
+.editCharacterButton {
+    display: block;
+    position: relative;
+    margin: 0 auto;
+    height: 65px;
+    font-size: 22px;
+    min-width: 100px;
 }
 
 .startGameButton{
@@ -299,14 +339,16 @@ body {
 }
 
 .characterSelection{
-	position: absolute;
-    bottom: 15%;
-	left:50%;
-	margin-left: -50px;
-    width: 100px;
-    height: 100px;
+	position: relative;
+	margin: 0 auto;
+    width: 60px;
+    height: 60px;
     border-radius: 25px;
     background-color: var(--themesubblack);
+}
+
+.characterSelection:not(:has(*)) {
+    display: none;
 }
 
 .customPickerLeft {
@@ -316,11 +358,9 @@ body {
 	margin-top: 10%;
 	margin-left: 10%;
 	-webkit-appearance: none;
-	border: 1px black solid;
-	border-radius: 5px;
-	color: black;
-	border-color: black;
-	background-color: black;
+	border-color: transparent;
+	padding: 0;
+	border-radius: 40px;
 }
 
 .customPickerLeft::-webkit-color-swatch-wrapper {
@@ -379,28 +419,18 @@ body {
 	height: 100%;
   }
 
-.lobbyDiv .teamblock:not(:last-child)::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 2px;
-    height: 100%;
-    background: var(--themegreen);
-    box-shadow:
-        0 0 0.125em hsl(0 0% 100% / 0.5),
-        0 0 0.45em var(--themegreenneon);
-}
+
 
 
 .teamblock {
 	position: relative;
-	height:65%;
+	height: 220px;
 	float:left;
-	overflow:hidden;
+	overflow:visible;
 	display: grid;
     place-items: center;
 	box-sizing: border-box;
+	width: 100%;
 }
 
 .teamChoosingButton {
@@ -429,7 +459,7 @@ body {
     font-size: 13px;
     text-align: center;
     left: 5%;
-	bottom: 15%;
+	top: 0;
 	z-index: 2000;
 }
 
@@ -458,18 +488,7 @@ body {
 	transform:translate(0%,-15%);
 }
 
-#deviceController {
-	display: none;
-	vertical-align: middle;
-	width: 100vw;
-	height: 100vh;
-	background-color: var(--themedisabled);
-	z-index: 2000;
-	position: absolute;
-	left:50vw;
-	top:50vh;
-	transform: translate(-50vw,-50vh);
-  }
+
   
 
 .buttoncontainer {
@@ -498,9 +517,26 @@ body {
     align-items: center;
 }
 
-@media (max-width: 700px) {
+.highscores {
+	border-left: 1px solid var(--themegreen);
+	display: block;
+  	padding: 15px;
+	float: right;
+    width: 25%;
+    box-sizing: border-box;
+    color: white;
+	min-height: 450px;
+}
+
+@media (max-width: 1000px) {
 	.controllerSwitcherDiv {
 		font-size: 10px;
+	}
+	.lobbyDiv, .highscores, #canvasWrapper {
+		display: none !important;
+	}
+	.gameLogo {
+		margin-top: 15vh;
 	}
 }
 

@@ -29,5 +29,55 @@
 				0
 			]
 		}
+	},
+	{
+		"userId": 6,
+		"selectedCharacter": {
+			"color": [
+				32,
+				97,
+				166
+			]
+		}
+	},
+	{
+		"userId": 7,
+		"selectedCharacter": {
+			"color": [
+				168,
+				211,
+				200
+			]
+		}
+	},
+	{
+		"userId": 8,
+		"selectedCharacter": {
+			"color": [
+				35,
+				97,
+				166
+			]
+		}
+	},
+	{
+		"userId": 10,
+		"selectedCharacter": {
+			"color": [
+				255,
+				255,
+				255
+			]
+		}
+	},
+	{
+		"userId": 9,
+		"selectedCharacter": {
+			"color": [
+				98,
+				97,
+				172
+			]
+		}
 	}
 ]

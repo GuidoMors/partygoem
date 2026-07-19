@@ -15,18 +15,44 @@
 }
 
 #canvasWrapper {
-  position: relative;
+  position: absolute;
   z-index: 1;
   height: 100%;
   width: 80%;
-  float:left;
+  left: 0;
   display: none;
+  z-index: 999999;
+}
+
+#deviceController {
+	display: none;
+	vertical-align: middle;
+	width: 100vw;
+	height: 100vh;
+	background-color: var(--themeblack);
+	z-index: 2000;
+	position: absolute;
+	left:50vw;
+	top:50vh;
+	transform: translate(-50vw,-50vh);
+  z-index: 9999999;
 }
 
 .gameCanvas {
   position:absolute; 
   float:left;
   z-index: 2;
+}
+
+.gameScore {
+  color: white;
+  border-left: 1px var(--themegreen) solid;
+  padding: 15px;
+  min-height: 700px;
+  position: absolute;
+  right: 0;
+  z-index: 9999999;
+  width:20%;
 }
 
 .floorCanvas {
@@ -110,15 +136,12 @@
   z-index: 999;
   float:left;
   position: absolute;
-  width: 33%;
+  width: 100%;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
   border-radius: 25px;
-  -webkit-box-shadow: 0 8px 4px -4px black;
-  -moz-box-shadow: 0 8px 4px -4px black;
-  box-shadow: 0 8px 4px -4px black;
-  background-color: var(--themeblack);
+  background: transparent;
   min-width:200px;
 }
 
@@ -142,12 +165,12 @@
   margin-bottom: 4%;
   margin-left: 5%;
   border: 5px solid transparent;
-  font-family: 'Tahoma';
-  font-size: 2rem;
   text-align: center;
   -webkit-text-stroke: 1px black;
   margin-bottom: 3%;
   color: var(--themewhite);
+  font-size: 150px;
+  font-family: 'bigfont';
 }
 
 .scoreContainer{

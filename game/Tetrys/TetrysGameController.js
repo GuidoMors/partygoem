@@ -846,13 +846,13 @@ class TetrysGameController extends CommonGameController{
 	
 	initTiles(){
 		this.gameState.tiles={};
-		var noTile={name: NONE, id:0, isBlocking:true, color:[0,0,0]};
+		var noTile={name: NONE, id:0, isBlocking:true, color:[1,4,1]};
 		this.gameState.tiles[noTile.name]=noTile;
 		
 		var wallTile={name: "wall", id:1,  isBlocking:true,  color:[50,50,50]};
 		this.gameState.tiles[wallTile.name]=wallTile;
 		
-		var emptyTile={name: "empty", id:2, isBlocking:false,  color:[200,200,200]};
+		var emptyTile={name: "empty", id:2, isBlocking:false,  color:[20,20,20]};
 		this.gameState.tiles[emptyTile.name]=emptyTile;
 		
 		for(var i=0;i< this.gameState.players.length;i++){

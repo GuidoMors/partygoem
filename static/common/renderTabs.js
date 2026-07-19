@@ -13,30 +13,60 @@ socket.on('gameRoomUpdated', function(gameId, myGameRoom, allSimpleUsersList) {
 
 function activateSideTab(){
 
-	document.getElementById("gameLog").style.display = "none";
-	document.getElementById("typeBox").style.display = "none";
-	document.getElementById("sideLog").style.display = "block";
-	document.getElementById("playerlistLog").style.display = "none";
 
-	document.getElementById("playerlistButton").style.display = "block";
-	document.getElementById("backToChatButton").style.display = "none";
+	var gameLog = document.getElementById("gameLog");
+	if (gameLog){
+		gameLog.style.display = "none";
+	}
+	var typeBox = document.getElementById("typeBox");
+	if (typeBox){
+		typeBox.style.display = "none";
+	}
+	var sidelog = document.getElementById("sideLog")
+	if (sidelog){
+		sidelog.style.display = "block";
+	}
+	var playerListLog = document.getElementById("playerlistLog");
+	if (playerListLog){
+		playerListLog.style.display = "none";
+	}
+	var playerlistButton = document.getElementById("playerlistButton");
+	if (playerlistButton){
+		playerlistButton.style.display = "block";
+	}
+	var backToChatButton = document.getElementById("backToChatButton");
+	if (backToChatButton){
+		backToChatButton.style.display = "none";
+	}
 
 	tabActive = "side";
 }
 
 function activateChatTab(){
-	document.getElementById("gameLog").style.display = "block";
-	document.getElementById("typeBox").style.display = "block";
+	var gameLog = document.getElementById("gameLog");
+	if (gameLog){
+		gameLog.style.display = "block";
+	}
+	var typeBox = document.getElementById("typeBox");
+	if (typeBox){
+		typeBox.style.display = "block";
+	}
 	var sidelog = document.getElementById("sideLog")
 	if (sidelog){
 		sidelog.style.display = "none";
 	}
-
-
-	document.getElementById("playerlistLog").style.display = "none";
-
-	document.getElementById("playerlistButton").style.display = "block";
-	document.getElementById("backToChatButton").style.display = "none";
+	var playerListLog = document.getElementById("playerlistLog");
+	if (playerListLog){
+		playerListLog.style.display = "none";
+	}
+	var playerlistButton = document.getElementById("playerlistButton");
+	if (playerlistButton){
+		playerlistButton.style.display = "block";
+	}
+	var backToChatButton = document.getElementById("backToChatButton");
+	if (backToChatButton){
+		backToChatButton.style.display = "none";
+	}
 
 	tabActive = "chat";
 }

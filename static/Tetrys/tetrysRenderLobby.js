@@ -23,10 +23,21 @@ function removeLobby(){
 	// changeButton.style.display = "none";
 
 	var swapButton = document.getElementById("swapTabButton");
-	swapButton.style.display = "block";
+	if (swapButton){
+		swapButton.style.display = "block";
+	}
+	
 
 	var wrapper = document.getElementById("canvasWrapper");
-	wrapper.style.display = "block";
+	if (wrapper){
+		wrapper.style.display = "block";
+	}
+
+	var gameScore = document.getElementById("gameScore");
+	if (gameScore){
+		gameScore.style.display = "block";
+	}
+	
 }
 
 function hideSideMenu() {
@@ -103,7 +114,9 @@ function drawCharacterSelection(){
 		var characterSelectionDiv=document.createElement("div");
 		characterSelectionDiv.setAttribute("id","characterSelectionDiv");
 		characterSelectionDiv.classList.add("characterSelection");
-		lobbyDiv.appendChild(characterSelectionDiv);
+		characterSelectionDiv.classList.add("neonwhite");
+		characterSelectionDiv.classList.add("neonborder");
+		buttonDiv.appendChild(characterSelectionDiv);
 
 		var characterSelectionDivLeft=document.createElement("div");
 		characterSelectionDivLeft.setAttribute("id","characterSelectionDivLeft");
@@ -144,6 +157,7 @@ function createCharacterImageDivDraft(id,name, tempSelectedCharacter){
 	var characterName = document.createElement("span"); 
 	characterName.setAttribute("id","playerNameTag_"+id);
 	characterName.classList.add("myPlayerNameTag");
+	characterName.classList.add("neonwhite");
 	characterName.innerHTML=name;
 	//draw/add them in correct order (first the one that is in the background)
 	
@@ -169,13 +183,23 @@ function createCharacterImageDivPlayer(id, name, tempSelectedCharacter, isReady)
 	var characterName=document.createElement("span"); 
 	characterName.setAttribute("id","playerNameTag_"+id);
 	characterName.classList.add("playerNameTag");
+	characterName.classList.add("neonwhite");
 	characterName.innerHTML=name;
 	characterDivImage.appendChild(characterName);
 	
 	var characterReady=document.createElement("span"); 
 	//characterReady.setAttribute("id","playerReadyTag_"+id);
-	characterReady.classList.add("playerNameTag");
-	characterReady.innerHTML=isReady? "is ready" : "is not ready";
+	characterReady.classList.add("playerReadyTag");
+	if (isReady){
+		characterReady.classList.add("neonwhite");
+		characterReady.classList.add("neonborder");
+		characterReady.innerHTML="     ready     ";
+	} else {
+		characterReady.classList.add("neongrey");
+		characterReady.classList.add("neonborder");
+		characterReady.innerHTML="not ready";
+	}
+	
 	characterDivImage.appendChild(characterReady);
 	
 	
@@ -233,7 +257,9 @@ function deleteGuiElement(IdToBeDeleted) {
 
 function deleteGuiElementContents(IdToCleared) {
 	var toBeCleared = document.getElementById(IdToCleared);
-	toBeCleared.innerHTML="";
+	if (toBeCleared){
+		toBeCleared.innerHTML="";
+	}
 }
 
 
@@ -342,65 +368,76 @@ function drawGameLobby(){
 	
 	var middle= document.getElementById("middle");
 	middle.appendChild(lobbyDiv);
-	middle.style.display = "block";
-	
-	if (! isMeHost()){
-			var joinGameButton=document.createElement("button");
-			joinGameButton.setAttribute("id","joinGameButton");
-			joinGameButton.innerHTML = "JOIN";
-			joinGameButton.classList.add("joinGameButton");
-			joinGameButton.classList.add("neonborder");
-			joinGameButton.classList.add("neonbutton");
-			joinGameButton.classList.add("neongreen");
-			joinGameButton.style.zIndex=1000;
-			lobbyDiv.appendChild(joinGameButton);
-	}
-	
+
 	////draw highscore if exists
 	var highscorediv=document.createElement("div");
-	highscorediv.style.display="block";
-	
-	for (var i=0; i<gameState.highScores.length;i++){
-		var oneHighscoreDiv = document.createElement("div");
-		oneHighscoreDiv.innerHTML= gameState.highScores[i];
-		 oneHighscoreDiv.innerHTML = `
-				<span>${i+1}.</span>
-				<span>${getUserNameById(gameState.highScores[i].userId)}</span>
-				<span>${gameState.highScores[i].score}</span>
-				<span>${gameState.highScores[i].diedAt}s</span>
-				<span>${gameState.highScores[i].matchId}</span>
-				<span>${gameState.highScores[i].timestamp}</span>
-			  `;
-		highscorediv.appendChild(oneHighscoreDiv);
-		
+	highscorediv.classList.add("highscores");
+	if ( isMeHost()){
+		highscorediv.style.setProperty("display", "block", "important");
+		lobbyDiv.style.setProperty("display", "block", "important");
 	}
-	lobbyDiv.appendChild(highscorediv);
-	console.log(gameState);
+	
+	if (gameState && gameState.highScores){
+		for (var i=0; i<gameState.highScores.length;i++){
+			var oneHighscoreDiv = document.createElement("div");
+			oneHighscoreDiv.innerHTML= gameState.highScores[i];
+			oneHighscoreDiv.innerHTML = `
+					<span>${i+1}.</span>
+					<span>${getUserNameById(gameState.highScores[i].userId)}</span>
+					<span>${gameState.highScores[i].score}</span>
+				`;
+			if (i == 0){
+				oneHighscoreDiv.classList.add("firstplace");
+				oneHighscoreDiv.classList.add("neonwhite");
+				oneHighscoreDiv.classList.add("neonborder");
+			}
+			highscorediv.appendChild(oneHighscoreDiv);
+			
+		}
+		middle.appendChild(highscorediv);
+	}
+	
+	
+	var buttonDiv=document.createElement("div");
+	buttonDiv.setAttribute("id","buttonDiv");
+	buttonDiv.classList.add("buttonDiv");
+	middle.appendChild(buttonDiv);
+
+
+
+	if (! isMeHost()){
+		var joinGameButton=document.createElement("button");
+		joinGameButton.setAttribute("id","joinGameButton");
+		joinGameButton.innerHTML = "JOIN";
+		joinGameButton.classList.add("joinGameButton");
+		joinGameButton.classList.add("neonborder");
+		joinGameButton.classList.add("neonbutton");
+		joinGameButton.classList.add("neongreen");
+		joinGameButton.style.zIndex=1000;
+		buttonDiv.appendChild(joinGameButton);
+
+		if (!Tools.isElementInList(gameState.players,"userId",userId)){
+			joinGameButton.style.display="block";
+			joinGameButton.addEventListener('click', function(event) {
+
+				var newTeamNr=1;
+				joinGame(newTeamNr, getMySelectedCharacter());
+			});		
+		}else{
+			joinGameButton.style.display="none";
+		}
+	}
+
 
 	for(var i=1;i<gameSettings.teams;i++){
 		var teamblock=document.createElement("div");
 		teamblock.setAttribute("id","teamblock"+i);
 		teamblock.classList.add("teamblock");
-		teamblock.style.width = 100/(gameSettings.teams-1)+"%";
 		if (i%2 == 0){
 			teamblock.classList.add("themeRed");
 		}
 		else{
 			teamblock.classList.add("themeBlue");
-		}
-
-		if (! isMeHost()){
-			  
-			if (!Tools.isElementInList(gameState.players,"userId",userId)){
-				joinGameButton.style.display="block";
-				joinGameButton.addEventListener('click', function(event) {
-					var newTeamNr=1;
-					joinGame(newTeamNr, getMySelectedCharacter());
-				});		
-			}
-			else{
-				joinGameButton.style.display="none";
-			}
 		}
 
 		var playerPicsContainer=document.createElement("div");
@@ -412,10 +449,11 @@ function drawGameLobby(){
 		
 	}
 	
-	
-	
 	var canvasWrapper = document.getElementById("canvasWrapper");
 	canvasWrapper.style.display = "none";
+
+	var gameScore = document.getElementById("gameScore");
+	gameScore.style.display = "none";
 	
 	//if i am not a player myself yet, show me character selection.
 	if(!Tools.isElementInList(gameState.players,"userId",userId)){
@@ -425,7 +463,7 @@ function drawGameLobby(){
 		var characterSelectionDiv=document.createElement("div");
 		characterSelectionDiv.setAttribute("id","characterSelectionDiv");
 		characterSelectionDiv.classList.add("characterSelection");
-		lobbyDiv.appendChild(characterSelectionDiv);
+		buttonDiv.appendChild(characterSelectionDiv);
 		
 		var leavePlayersButton=document.createElement("button");
 		leavePlayersButton.setAttribute("id","leavePlayersButton");
@@ -435,23 +473,30 @@ function drawGameLobby(){
 			leavePlayersButton.innerHTML = "Edit Character";
 		}
 		leavePlayersButton.classList.add("editCharacterButton");
+		leavePlayersButton.classList.add("neonborder");
+		leavePlayersButton.classList.add("neonbutton");
+		leavePlayersButton.classList.add("neongreen");
 		leavePlayersButton.addEventListener('click', function(event) {
 			leavePlayers();
 		});		
-		characterSelectionDiv.appendChild(leavePlayersButton);
+		buttonDiv.appendChild(leavePlayersButton);
 
 		var readyButton=document.createElement("button");
 		readyButton.setAttribute("id","readyButton");
 		readyButton.innerHTML = isPlayerReady ? "Unready" : "Ready";
 		readyButton.classList.add("readyButton");
-		readyButton.classList.add("BigButton");
+		readyButton.classList.add("neonborder");
+		readyButton.classList.add("neonbutton");
+		readyButton.classList.add("neongreen");
 		readyButton.addEventListener('click', function(event) {
 		 	toggleReady();
 		readyButton.innerHTML = isPlayerReady ? "Unready" : "Ready";
 			
 		 });		
-		lobbyDiv.appendChild(readyButton);	
+		buttonDiv.appendChild(readyButton);	
 	}
+
+
 
 }
 function drawCharacterSelectionLeft(docelement){

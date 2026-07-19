@@ -1,6 +1,5 @@
 /*Script for general client-Side functions*/
 
-
 /** general VARIABLES**/
 
 var GAME_NAME="Tetrys";
@@ -39,7 +38,7 @@ socket.on(GAME_NAME+"_receiveGameState", function(newGameState, newGameId){
 		hideSideMenu();
 	}
 
-	if (gameState.isRunning && !isHost) {
+	if (gameState.isRunning && !isMeHost() && !isMeObserver()) {
 		showControllerMode(true);
 	} else {
 		showControllerMode(false);
@@ -161,15 +160,17 @@ function drawStartAnimation(){
 	context.fillRect(0, 0, canvas.width, canvas.height );
 	context.globalAlpha = 1.0;
 
-	fontSize = 250;
+	fontSize = 350;
 
 	if (intermediateGameState.gameTimer >= 2 && intermediateGameState.gameTimer < 5) {
+		const themeGreen = getComputedStyle(document.documentElement).getPropertyValue("--themegreen").trim();
+
 		context.fillStyle = 'black';
-		context.font = fontSize+'px Arial';	
+		context.font = fontSize+'px bigfont';	
 		context.fillText((5-intermediateGameState.gameTimer), ((canvas.width-(fontSize/2) )/ 2), ((canvas.height+fontSize)/2));
 		
-		context.fillStyle = 'white';
-		context.font = (fontSize-20)+'px Arial';	
+		context.fillStyle = themeGreen;
+		context.font = (fontSize-20)+'px bigfont';	
 		context.fillText((5-intermediateGameState.gameTimer), ((canvas.width-(fontSize/2) )/ 2)+2, ((canvas.height+fontSize)/2));
 
 	}
@@ -182,7 +183,7 @@ function drawGamePause(){
 	var context = canvas.getContext('2d');
 	context.clearRect(0, 0, canvas.width, canvas.height);
 	context.fillStyle = 'green';
-	context.font = '48px Arial';	
+	context.font = '48px bigfont';	
 	context.fillText("..GAME IS PAUSED..", canvas.width / 4, canvas.height/2);
 	
 }
@@ -209,24 +210,6 @@ function drawPostGame(){
 		var scoreContainer = document.createElement("div");
 		scoreContainer.setAttribute("id","scoreContainer");
 		scoreContainer.classList.add("scoreContainer");
-		
-		var scoresSorted = Object.values(intermediateGameState.score.playerScore).sort((a, b) => b.score - a.score);
-		
-		 scoreContainer.innerHTML = "";
-		// Add each player
-		scoresSorted.forEach((player, index) => {
-			  const div = document.createElement("div");
-			  div.style.color = "white";
-			  div.innerHTML = `
-				<span>${index + 1}.</span>
-				<span>${getUserNameById(player.userId)}</span>
-				<span>${player.score}</span>
-				<span>${player.diedAt}s</span>
-			  `;
-			scoreContainer.appendChild(div);
-		});
-
-		
 	
 		postgame.appendChild(scoreContainer);
 		/*
@@ -406,7 +389,8 @@ function drawMap(){
 
 	
 	var borderThickness=2;
-	var borderColor="#000000";
+	const themeBlack = getComputedStyle(document.documentElement).getPropertyValue("--themeblack").trim();
+	var borderColor= themeBlack;
 
 	for(var y=0;y<gameState.map.grid.length;y++){
 		for(var x=0;x<gameState.map.grid[y].length;x++){
@@ -427,11 +411,11 @@ function drawMap(){
 			var x=quickGameState.players[userId].coords[j].x;
 			var y=quickGameState.players[userId].coords[j].y;
 			//Border:
-				context.fillStyle =borderColor;
-				context.fillRect((x*w), (y*h), w, h);
-				//Filling:
-				context.fillStyle =Tools.RGBToHex(gameState.players[i].selectedCharacter.color);
-				context.fillRect((x*w)+borderThickness, (y*h)+borderThickness, w-(borderThickness*2), h-(borderThickness*2));
+			context.fillStyle =borderColor;
+			context.fillRect((x*w), (y*h), w, h);
+			//Filling:
+			context.fillStyle =Tools.RGBToHex(gameState.players[i].selectedCharacter.color);
+			context.fillRect((x*w)+borderThickness, (y*h)+borderThickness, w-(borderThickness*2), h-(borderThickness*2));
 		}
 	}
 	
@@ -452,10 +436,11 @@ function drawMap(){
 		}
 		var userScore =playerScoreObject!=null? playerScoreObject.score : 0;
 		var startingPosX = gameState.players[i].startingPos.x;
-		context.font = "50px serif";
-		context.fillStyle ="white";
+		context.font = "50px smallfont";
+		context.fillStyle = Tools.RGBToHex(gameState.players[i].selectedCharacter.color);
 		context.fillText(userName, startingPosX, 50);
-		context.fillText(userScore, startingPosX+600, 50);
+		const textWidth = context.measureText(userScore).width;
+		context.fillText(userScore, startingPosX + 672 - textWidth, 50);
 		
 		
 	}
@@ -485,6 +470,7 @@ function showControllerMode(on){
 	var right = document.getElementById("right");
 	if (deviceController){
 		if (on && intermediateGameState && intermediateGameState.gameTimer > -1){
+			console.log("display block");
 			clearOverlayCanvas();
 			clearCanvas();
 			deviceController.style.display = "block";
@@ -503,7 +489,6 @@ function showControllerMode(on){
 	
 	var controllerScoreDiv = document.getElementById("controllerScore");
 	if (controllerScoreDiv){
-		
 		controllerScoreDiv.innerHTML=""+getMyCurrentScore();
 	}
 	
@@ -537,29 +522,51 @@ function getMyCurrentScore(){
 
 
 function drawGameScore(){
-	if (!intermediateGameState){ return;}
-	var log = document.getElementById('sideLog');
-	deleteGuiElementContents('sideLog');
-	var gametimer = document.createElement("div");
-	log.appendChild(gametimer);
-	gametimer.classList.add("gametimer");
-	var timertext = Tools.getTimeAsString(intermediateGameState.gameTimer);
-	gametimer.innerHTML = timertext;
-
-	var diffBlock = document.createElement("div");
-	console.log(intermediateGameState.difficulty);
-	diffBlock.innerHTML = intermediateGameState.difficulty;
-	diffBlock.classList.add("teamblock"+1);
-	log.appendChild(diffBlock);
-/*
-	for (var i = 1; i<gameSettings.teams;i++){
-		var teamblock = document.createElement("div");
-		teamblock.innerHTML = intermediateGameState.score.teamScore[i].score;
-		teamblock.classList.add("teamblock"+i);
-		log.appendChild(teamblock);
+	if (!intermediateGameState || !gameState){ 
+		return;
 	}
-*/
+
+	var gameScore = document.getElementById("gameScore");
+	gameScore.innerHTML = "";
+
+	var highestScore = gameState.highScores[0].score;
+
+	if (highestScore > 0){
+		var oneHighscoreDiv = document.createElement("div");
+		oneHighscoreDiv.innerHTML = `
+			<span>HIGHSCORE:</span>
+			<br>
+			<span>${getUserNameById(gameState.highScores[0].userId)}</span>
+			<span>${gameState.highScores[0].score}</span>
+		`;
+		oneHighscoreDiv.classList.add("firstplace");
+		oneHighscoreDiv.classList.add("neonwhite");
+		oneHighscoreDiv.classList.add("neonborder");
+		gameScore.appendChild(oneHighscoreDiv);
+	}
+
+	var playerScores = Object.values(intermediateGameState.score.playerScore);
+	playerScores.sort((a, b) => b.score - a.score);
+
+	for (var i=0; i<playerScores.length;i++) {
+		var oneHighscoreDiv = document.createElement("div");
+		oneHighscoreDiv.innerHTML = `
+			<span>${i+1}.</span>
+			<span>${getUserNameById(playerScores[i].userId)}</span>
+			<span>${playerScores[i].score}</span>
+		`;
+		for (var j=0; j<gameState.players.length;j++) {
+			if (gameState.players[j].userId == playerScores[i].userId){
+				var color = Tools.RGBToHex(gameState.players[j].selectedCharacter.color);
+				console.log(color);
+				oneHighscoreDiv.style.color = color;
+			}
+		}
+		gameScore.appendChild(oneHighscoreDiv);
+	}
+
 }
+
 /*
 function toggleControllerOption(){
 	deviceIsControllerMode = !deviceIsControllerMode;
@@ -581,5 +588,5 @@ socket.on(GAME_NAME+"_receiveMeAsController", function(isController){
 
 function isDeviceIsControllerMode() {
 	//return deviceIsControllerMode;
-	return !isHost;
+	return !isMeHost() && !isMeObserver();
 }
