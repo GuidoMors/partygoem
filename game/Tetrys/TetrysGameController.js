@@ -52,6 +52,7 @@ class TetrysGameController extends CommonGameController{
 
 			
 		this.gameSettings = {
+			maxAmountPlayers: 6,
 			stepSize: 1, 
 			updateTimer: 14, //Fps xd
 			baseSpeed:1100,
@@ -84,6 +85,7 @@ class TetrysGameController extends CommonGameController{
 		this.gameState.difficulty = 1;
 		this.gameState.currentGamePhase = 0;
 		
+		this.gameState.players=[];
 		this.quickGameState={players:{}};
 	}
 
@@ -250,7 +252,7 @@ class TetrysGameController extends CommonGameController{
 	
 	
 	checkTic(){
-		console.log("checkTic "+ this.gameState.difficulty + " "+ this.intermediateGameState.gameTimer + " " + (this.intermediateGameState.gameTimer/this.gameSettings.difficultyTimer) + " " + (Math.floor(this.intermediateGameState.gameTimer / this.gameSettings.difficultyTimer))); 
+		//console.log("checkTic "+ this.gameState.difficulty + " "+ this.intermediateGameState.gameTimer + " " + (this.intermediateGameState.gameTimer/this.gameSettings.difficultyTimer) + " " + (Math.floor(this.intermediateGameState.gameTimer / this.gameSettings.difficultyTimer))); 
 		if(  Math.floor(this.intermediateGameState.gameTimer/this.gameSettings.difficultyTimer  )+1 > (this.gameState.difficulty)){
 			this.gameState.difficulty=( Math.floor(this.intermediateGameState.gameTimer / this.gameSettings.difficultyTimer) )+1;
 		}
@@ -389,7 +391,6 @@ class TetrysGameController extends CommonGameController{
 				if(this.gameState.players[i].userId==userId){
 					var oldDirection= this.quickGameState.players[userId].direction;
 					var newDirection = oldDirection >0 ? (oldDirection -1) :  3;
-					console.log("newdir" + newDirection);
 					//this.quickGameState.players[userId].direction=((this.quickGameState.players[userId].direction-1) %4);
 					//	if(this.quickGameState.players[userId].direction<0){
 					//this.quickGameState.players[userId].direction=4;
@@ -631,8 +632,8 @@ class TetrysGameController extends CommonGameController{
 		this.refreshIntermediateGameInfo();
 		this.refreshQuickGameInfo();
 		this.server.pushLogMessage("Game Over! {0} won with a score of {1}!",[this.server.getUserNameByUserId(winningUserId),highestScore],  false, false,this.gameId);		
-		console.log(this.intermediateGameState.score);
-		console.log(JSON.stringify(this.intermediateGameState.score));
+		//console.log(this.intermediateGameState.score);
+		//console.log(JSON.stringify(this.intermediateGameState.score));
 				
 		setTimeout(() => {//new: since admin may not click "back to lobby after game ends, automatically finishGame after 10 secs"
 				this.finishGame();
@@ -969,7 +970,7 @@ STATIC PART
 	
 	
 	giveGameStates(){
-		console.log("givegamestates:"+ this.gamestate)
+		//console.log("givegamestates:"+ JSON.stringify(this.gamestate));
 		this.io.to(this.gameId).emit(this.gameType+"_receiveGameState",this.gameState, this.gameId);	
 	}
 
@@ -1117,7 +1118,7 @@ STATIC PART
 	loadHighScores(){
 		var bestScorePerPlayer = {};
 		var scoresFile = this.readAllScoreFiles();
-		console.log(scoresFile);
+		//console.log(scoresFile);
 		if (scoresFile !=null && scoresFile.length >0){
 			for (var i=0; i < scoresFile.length;i++){
 				var match = scoresFile[i];

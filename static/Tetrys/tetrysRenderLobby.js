@@ -15,6 +15,10 @@ socket.on(GAME_NAME+"_receiveCustomizations", function(customizationOptions, cus
 	selectedCharacter=customCharacter;
 });
 
+socket.on(GAME_NAME+"_maxPlayersReached", function(maxPlayerAmount){	
+	console.log("Join Game failed - maximum amount of players ("+maxPlayerAmount+") reached");
+});
+
 function removeLobby(){
 	var middle = document.getElementById("middle");
 	middle.style.display = "none";
@@ -356,6 +360,7 @@ function createCharacterImageCanvas(id, name, myCharacter){
 }
 
 function drawGameLobby(){
+	console.log("drawgamelobby");
 	//clearGameLobby();
 	clearBoard();
 	deleteGuiElement("postGameScreen");
@@ -374,7 +379,7 @@ function drawGameLobby(){
 	highscorediv.classList.add("highscores");
 	if ( isMeHost()){
 		highscorediv.style.setProperty("display", "block", "important");
-		lobbyDiv.style.setProperty("display", "block", "important");
+		lobbyDiv.style.setProperty("display", "grid", "important");
 	}
 	
 	if (gameState && gameState.highScores){
@@ -422,7 +427,14 @@ function drawGameLobby(){
 
 				var newTeamNr=1;
 				joinGame(newTeamNr, getMySelectedCharacter());
-			});		
+			});	
+			if(gameSettings.maxAmountPlayers > gameState.players.length){
+				joinGameButton.disabled=false;
+			}
+			else{
+				joinGameButton.disabled=true;
+			}
+			
 		}else{
 			joinGameButton.style.display="none";
 		}
@@ -454,6 +466,9 @@ function drawGameLobby(){
 
 	var gameScore = document.getElementById("gameScore");
 	gameScore.style.display = "none";
+	
+	var middle = document.getElementById("middle");
+	middle.style.display = "block";
 	
 	//if i am not a player myself yet, show me character selection.
 	if(!Tools.isElementInList(gameState.players,"userId",userId)){
