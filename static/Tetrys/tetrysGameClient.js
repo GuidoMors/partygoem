@@ -517,6 +517,10 @@ function showControllerMode(on){
 
 function getMyCurrentScore(){
 
+	if (!intermediateGameState){
+		return 0;
+	}
+
 		var playerScoreObject = null;
 		for(var j in Object.keys(intermediateGameState.score.playerScore)){	
 			if(intermediateGameState.score.playerScore[j].userId == userId){
