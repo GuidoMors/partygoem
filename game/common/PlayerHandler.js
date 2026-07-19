@@ -72,7 +72,7 @@ class PlayerHandler extends CommonGameComponent{
 	}
 	
 	restructureTeamsIfEveryoneIsOnTheirOwn(){
-		console.log("restructureTeamsIfEveryoneIsOnTheirOwn");
+		//console.log("restructureTeamsIfEveryoneIsOnTheirOwn");
 		this.printTeams();
 		if(this.isPlayerOwnTeam && !this.gameController.gameState.isRunning){
 			var teamsCounter=1;
@@ -156,33 +156,40 @@ class PlayerHandler extends CommonGameComponent{
 		if there is a Character given, we will expect a characterHandler to be existent and ask him to store the custom looks.
 		Player will be set to "not ready"
 	**/
-	joinGame(userId, teamNr, newCharacter){
-		console.log("joinGame " + userId + " "+teamNr );
-		var playerAlreadyExisting=false;
-		var playerObject=undefined;
-		for(var i=0; i<this.gameController.gameState.players.length;i++){
-			if(this.gameController.gameState.players[i].userId==userId){
-				playerAlreadyExisting=true;
-				this.gameController.gameState.players[i].team=teamNr;
-				this.gameController.gameState.players[i].selectedCharacter=newCharacter;
-				this.gameController.gameState.players[i].ready=false;
+	joinGame(userId, teamNr, newCharacter, socketId){
+		if(this.gameController.gameSettings.maxAmountPlayers>0 && this.gameController.gameState.players.length < this.gameController.gameSettings.maxAmountPlayers){
+				
+			//console.log("joinGame " + userId + " "+teamNr );
+			var playerAlreadyExisting=false;
+			var playerObject=undefined;
+			for(var i=0; i<this.gameController.gameState.players.length;i++){
+				if(this.gameController.gameState.players[i].userId==userId){
+					playerAlreadyExisting=true;
+					this.gameController.gameState.players[i].team=teamNr;
+					this.gameController.gameState.players[i].selectedCharacter=newCharacter;
+					this.gameController.gameState.players[i].ready=false;
+					this.restructureTeamsIfEveryoneIsOnTheirOwn();
+					this.gameController.handleComponentSignal({source:this, sourceClass: this.constructor.name, type:"changeTeam", target:userId});
+				}
+			}
+			if(!playerAlreadyExisting){
+				
+				var newPlayer={userId: userId, team:teamNr, ready:false};
+				if (newCharacter!=undefined){
+					newPlayer.selectedCharacter=newCharacter;
+				}
+				this.gameController.gameState.players.push(newPlayer);
 				this.restructureTeamsIfEveryoneIsOnTheirOwn();
-				this.gameController.handleComponentSignal({source:this, sourceClass: this.constructor.name, type:"changeTeam", target:userId});
+				this.gameController.handleComponentSignal({source:this, sourceClass: this.constructor.name, type:"joinPlayer", target:userId});
+				
+			}
+			if (newCharacter!=undefined && this.gameController.characterHandler!=undefined){
+				this.gameController.characterHandler.storeCustomCharacter(userId,newCharacter);
 			}
 		}
-		if(!playerAlreadyExisting){
-			
-			var newPlayer={userId: userId, team:teamNr, ready:false};
-			if (newCharacter!=undefined){
-				newPlayer.selectedCharacter=newCharacter;
-			}
-			this.gameController.gameState.players.push(newPlayer);
-			this.restructureTeamsIfEveryoneIsOnTheirOwn();
-			this.gameController.handleComponentSignal({source:this, sourceClass: this.constructor.name, type:"joinPlayer", target:userId});
-			
-		}
-		if (newCharacter!=undefined && this.gameController.characterHandler!=undefined){
-			this.gameController.characterHandler.storeCustomCharacter(userId,newCharacter);
+		else{
+			console.log("max amount of players reached ("+this.gameController.gameSettings.maxAmountPlayers+"), cannot join");
+			this.io.to(socketId).emit(this.gameType+"_maxPlayersReached",this.gameController.gameSettings.maxAmountPlayers);	
 		}
 	}
 
@@ -195,14 +202,14 @@ class PlayerHandler extends CommonGameComponent{
 			}
 		}
 		//return allPlayersReady;
-		console.log("allPlayersReady: "+ allPlayersReady+ " amount players: "+ ( this.gameController.gameState.players.length>0));
+		//console.log("allPlayersReady: "+ allPlayersReady+ " amount players: "+ ( this.gameController.gameState.players.length>0));
 		if(allPlayersReady && this.gameController.gameState.players.length>0){
 			this.gameController.startGame();
 		}
 	}
 	
 	togglePlayerReady(userId, isReady){
-		console.log("togglePlayerReady: "+ userId+ " "+ isReady);
+		//console.log("togglePlayerReady: "+ userId+ " "+ isReady);
 		
 		for(var i=0; i<this.gameController.gameState.players.length;i++){
 			if(this.gameController.gameState.players[i].userId==userId){
