@@ -527,6 +527,10 @@ function getMyCurrentScore(){
 				playerScoreObject=intermediateGameState.score.playerScore[j];
 			}
 		}
+		if (playerScoreObject==null){
+			return 0;
+		}
+
 		return playerScoreObject.score;
 }
 
