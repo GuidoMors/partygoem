@@ -16,7 +16,7 @@ class TetrysGameController extends CommonGameController{
 
 		constructor(gameId, host, gameName, io, server, hash) {  
 		super(GAME_NAME, gameId, host, gameName, io, server);
-		var defaultCustomCharacter={color:[200,100,0]};
+		var defaultCustomCharacter={color:null};
 		this.characterHandler=new CharacterHandler(this,io, gameId, defaultCustomCharacter, {});
 	
 		this.hash = hash;

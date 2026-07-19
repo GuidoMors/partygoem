@@ -420,7 +420,12 @@ function createElementFromHTML(htmlString) {
 
 
 function sendMessage(){
-	var word = document.getElementById('inputMessage').value;
+	var inputDiv = document.getElementById('inputMessage');
+	if (!inputDiv){
+		return;
+	}
+	
+	var word = inputDiv.value;
 	if(word.length>0){
 		socket.emit('newMessage', word);
 		document.getElementById('inputMessage').value= "";

@@ -6,9 +6,6 @@ var selectedTeam=1;
 
 var selectedCharacter;
 
-function getReceivedSelectedCharacter(){
-	return selectedCharacter;
-}
 
 //refresh html when new player connects // Press F5
 socket.emit(GAME_NAME+"_requireCustomizations");		
@@ -131,15 +128,8 @@ function drawCharacterSelection(){
 	
 }
 
-//function drawCharacterSelectionLeft(docelement){}
-//function drawCharacterSelectionMiddle(docelement){}
-//function drawCharacterSelectionRight(docelement){}
-//function createCharacterImageCanvas(id, name, selectedCharacter){}
-//function getMySelectedCharacter();
 
-
-
-function createCharacterImageDivDraft(id,name,selectedCharacter){
+function createCharacterImageDivDraft(id,name, tempSelectedCharacter){
 	var characterDivImage = document.createElement("div");
 	characterDivImage.setAttribute("id","characterDivImage_"+id);
 	if(id=="draft"){
@@ -147,7 +137,7 @@ function createCharacterImageDivDraft(id,name,selectedCharacter){
 	}else{
 		characterDivImage.classList.add("customImageDisplay");
 	}
-	var playerCanvas=createCharacterImageCanvas(id, name ,selectedCharacter);
+	var playerCanvas=createCharacterImageCanvas(id, name , tempSelectedCharacter);
 	characterDivImage.appendChild(playerCanvas);
 	
 	var middle = document.getElementById("characterSelectionDivMiddle");
@@ -167,12 +157,12 @@ function createCharacterImageDivDraft(id,name,selectedCharacter){
 	
 	
 	
-function createCharacterImageDivPlayer(id, name,selectedCharacter, isReady){
+function createCharacterImageDivPlayer(id, name, tempSelectedCharacter, isReady){
 	
 	var characterDivImage = document.createElement("div");
 	characterDivImage.setAttribute("id","characterDivImage_"+id);
 	characterDivImage.classList.add("customImageDisplay");
-	var playerCanvas=createCharacterImageCanvas(id, name ,selectedCharacter);
+	var playerCanvas=createCharacterImageCanvas(id, name ,tempSelectedCharacter);
 	characterDivImage.appendChild(playerCanvas);
 
 	
@@ -262,12 +252,34 @@ function clearBoard() {
 
 
 function getMySelectedCharacter(){
-	var selectedCharacter=getReceivedSelectedCharacter();
 	if(selectedCharacter==undefined){
-		selectedCharacter={color: [10,100,255]};
+		selectedCharacter={color: null};
+	}
+
+	if (selectedCharacter.color==null){
+		var tempName = getUserName();
+		selectedCharacter.color=colorFromName(tempName);
 	}
 
 	return selectedCharacter;
+}
+
+function colorFromName(name) {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+        hash = ((hash << 5) - hash) + name.charCodeAt(i);
+        hash |= 0;
+    }
+
+    const min = 20;
+    const max = 230;
+    const range = max - min + 1;
+
+    return [
+        min + ( hash        & 0xFF) % range,
+        min + ((hash >> 8)  & 0xFF) % range,
+        min + ((hash >> 16) & 0xFF) % range
+    ];
 }
 
 function createCharacterImageCanvas(id, name, myCharacter){
@@ -351,7 +363,6 @@ function drawGameLobby(){
 		teamblock.style.width = 100/(gameSettings.teams-1)+"%";
 		if (i%2 == 0){
 			teamblock.classList.add("themeRed");
-			
 		}
 		else{
 			teamblock.classList.add("themeBlue");
@@ -435,7 +446,7 @@ function drawCharacterSelectionMiddle(docelement){
 	colorPicker.setAttribute("id","ColorPicker");
 	docelement.appendChild(colorPicker);
 	
-	colorPicker.setAttribute("value",Tools.RGBToHex(selectedCharacter.color));
+	colorPicker.setAttribute("value",Tools.RGBToHex(getMySelectedCharacter().color));
 		colorPicker.addEventListener("change", function(){
 			selectedCharacter.color = Tools.hexToRGB(document.getElementById('ColorPicker').value);
 		}, false);

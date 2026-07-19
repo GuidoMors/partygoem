@@ -32,13 +32,13 @@ body {
 .lobbyDiv {
 	background-color: var(--themeblack);
 	height: 80%;
-	z-index: 999;
 	border-radius: 10px;
 	position: absolute;
     top: 17%;
 }
 
 #right {
+	display: none;
 	background-color: var(--themeblack);
 	z-index:1200;
 	border-left: 1px white solid;
@@ -60,12 +60,14 @@ body {
 }
 
 .themeRed {
-	background-color: var(--teamone);
+	background: transparent;
+	/* background-color: var(--teamone); */
 	color: var(--white);
 }
 
 .themeBlue {
-	background-color: var(--teamtwo);
+	background: transparent;
+	/* background-color: var(--teamtwo); */
 	color: var(--white);
 }
 
@@ -147,6 +149,7 @@ body {
 	height:15%;
 	padding: 0;
 	margin-top: 2%;
+	z-index:10;
 }
 
 .gameLogo img{
@@ -168,24 +171,23 @@ body {
 }
 
 .playerPicsLobby{
-	width: fit-content;
-	height: 45%;
-	color:black;
+	width: 100%;
+	height: 100%;
+	color:white;
     position: absolute;
 	bottom: 0;
     display: grid;
-    grid-template-columns: repeat(100, 1fr);
+    grid-template-columns: repeat(auto-fit, 180px);
+	justify-content: center;
+	align-items: center;
 }
 
 .customImageDisplay {
 	display:block;
 	float:left;
 	margin-top: 2px;
-	margin-left:4px;
-	margin-right:4px;
 	height: 100px;
-	width: 80px;
-	top: -50px;
+	width: 180px;
     position: relative;
 }
 
@@ -365,6 +367,9 @@ body {
 	float:left;
 	width: 100%;
 	height: 100%;
+	padding-right: 50px;
+    padding-left: 50px;
+	box-sizing: border-box;
   }
 
 .characterCanvasDraft {
@@ -374,6 +379,19 @@ body {
 	height: 100%;
   }
 
+.lobbyDiv .teamblock:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: var(--themegreen);
+    box-shadow:
+        0 0 0.125em hsl(0 0% 100% / 0.5),
+        0 0 0.45em var(--themegreenneon);
+}
+
 
 .teamblock {
 	position: relative;
@@ -382,6 +400,7 @@ body {
 	overflow:hidden;
 	display: grid;
     place-items: center;
+	box-sizing: border-box;
 }
 
 .teamChoosingButton {

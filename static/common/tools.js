@@ -158,6 +158,10 @@ exports.hexToRGB = function(hex) {
 
 **/
 exports.RGBToHex = function(rgb) {
+	if (rgb == null){
+		return "#000000";
+	}
+	
 	return "#" + ((1 << 24) + (rgb[0] << 16) + (rgb[1] << 8) + rgb[2]).toString(16).slice(1);
   }
 
