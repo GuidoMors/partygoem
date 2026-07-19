@@ -513,9 +513,9 @@ function drawCharacterSelectionMiddle(docelement){
 	docelement.appendChild(colorPicker);
 	
 	colorPicker.setAttribute("value",Tools.RGBToHex(getMySelectedCharacter().color));
-		colorPicker.addEventListener("change", function(){
-			selectedCharacter.color = Tools.hexToRGB(document.getElementById('ColorPicker').value);
-		}, false);
+	colorPicker.addEventListener("change", function(){
+		selectedCharacter.color = Tools.hexToRGB(document.getElementById('ColorPicker').value);
+	}, false);
 	
 }
 

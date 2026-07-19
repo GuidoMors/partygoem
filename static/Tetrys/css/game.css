@@ -15,12 +15,14 @@
 }
 
 #canvasWrapper {
-  position: absolute;
+  position: relative;
   z-index: 1;
   height: 100%;
   width: 80%;
+  max-width: 80%;
   left: 0;
   display: none;
+  float:left;
   z-index: 999999;
 }
 
@@ -49,10 +51,12 @@
   border-left: 1px var(--themegreen) solid;
   padding: 15px;
   min-height: 700px;
-  position: absolute;
+  position: relative;
+  float:left;
   right: 0;
   z-index: 9999999;
   width:20%;
+  min-width: 300px;
 }
 
 .floorCanvas {

@@ -225,7 +225,7 @@ function drawPostGame(){
 			postgame.appendChild(finishGameButton);	
 		}*/
 
-
+		drawGameScore();
 	}
 
 	showControllerMode(false);
@@ -435,12 +435,12 @@ function drawMap(){
 			}
 		}
 		var userScore =playerScoreObject!=null? playerScoreObject.score : 0;
-		var startingPosX = gameState.players[i].startingPos.x;
+		var startingPosX = (i*10*64);
 		context.font = "50px smallfont";
 		context.fillStyle = Tools.RGBToHex(gameState.players[i].selectedCharacter.color);
-		context.fillText(userName, startingPosX, 50);
+		context.fillText(userName, startingPosX + 70, 50);
 		const textWidth = context.measureText(userScore).width;
-		context.fillText(userScore, startingPosX + 672 - textWidth, 50);
+		context.fillText(userScore, startingPosX + (10*64) - 6 - textWidth, 50);
 		
 		
 	}
@@ -558,7 +558,6 @@ function drawGameScore(){
 		for (var j=0; j<gameState.players.length;j++) {
 			if (gameState.players[j].userId == playerScores[i].userId){
 				var color = Tools.RGBToHex(gameState.players[j].selectedCharacter.color);
-				console.log(color);
 				oneHighscoreDiv.style.color = color;
 			}
 		}

@@ -186,6 +186,7 @@ body {
     font-size: 20px;
     position: relative;
 	width: fit-content;
+	z-index: 99999;
 }
 
 .gameLogo img{
@@ -493,13 +494,15 @@ body {
 
 .buttoncontainer {
 	position: absolute;
-	top:40%;
 	left:50%;
-	transform: translate(-50%, -50%); 
+	transform: translate(-50%, 0%);
 	display: grid;
 	gap: 10px;
 	grid-template-columns: repeat(3, 1fr);
-	width:60%
+	width: 320px;
+	height: 210px;
+	aspect-ratio: 3 / 2;
+	bottom: 25%;
 }
 
 .buttoncontainer button {
@@ -509,12 +512,17 @@ body {
 	border: solid black 5px;
 	box-sizing: border-box;
 	color: black;
-	font-size: 10vw;
-	min-width:50px;
-	max-width:250px;
+	font-size: 75px;
 	text-align: center;
 	justify-content: center;
     align-items: center;
+	aspect-ratio: 1 / 1;
+	width: 100px;
+    height: 100px;
+}
+
+.rotateRightButton {
+	transform: scaleX(-1);
 }
 
 .highscores {
