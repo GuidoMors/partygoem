@@ -78,12 +78,18 @@ FUNCTIONS
 **/
 
 // function that runs on loading the page
-function onLoadInit(){
-	setTimeout(function(){//it takes some time to send and receive gamestate so we wait 100 ms
-		socket.emit(GAME_NAME+"_requestGameState", socket.id);
-
-	}
-	,  100);
+function onLoadInit() {
+    const interval = setInterval(function () {
+        if (gameState == null) {
+            socket.emit(GAME_NAME + "_requestGameState", socket.id);
+        } else {
+			var loadingScreen = document.getElementById("loadingscreen");
+			if (loadingScreen) {
+				loadingScreen.remove();
+			}
+            clearInterval(interval);
+        }
+    }, 100);
 }
 
 

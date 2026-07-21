@@ -21,6 +21,11 @@
     <script src="/static/Tetrys/tetrysRenderLobby.js"></script>
   </head>
  <body onbeforeunload="return disconnectPlayer()" style="overflow:hidden">
+
+      <div id="loadingscreen">
+        <div class="loader"></div>
+        <span class="loadingtext">If loading takes too long, refresh the page.</span>
+      </div>
       
       <div id="canvasWrapper">
         <canvas id="floorCanvas" class="floorCanvas"></canvas>
