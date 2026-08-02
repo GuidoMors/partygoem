@@ -203,7 +203,7 @@ class PlayerHandler extends CommonGameComponent{
 		}
 		//return allPlayersReady;
 		//console.log("allPlayersReady: "+ allPlayersReady+ " amount players: "+ ( this.gameController.gameState.players.length>0));
-		if(allPlayersReady && this.gameController.gameState.players.length>0){
+		if(allPlayersReady && this.gameController.gameState.players.length>0 && !this.gameController.gameState.isRunning){
 			this.gameController.startGame();
 		}
 	}

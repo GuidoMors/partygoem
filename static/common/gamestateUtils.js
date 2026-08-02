@@ -8,9 +8,9 @@ var gameId;
 var isPlayerReady=false;
 
 //tied to the start game button; Start The Game when in Lobby Phase. Should only be pressed by admin.
-function startGame(){
-	socket.emit(GAME_NAME+"_startGame"+gameId);	
-}
+// function startGame(){
+// 	socket.emit(GAME_NAME+"_startGame"+gameId);	
+// }
 
 function toggleReady(){
 	console.log("toggleReady "+ isPlayerReady + " -> "+ (!isPlayerReady) + " "+ userId + " "+ gameId);

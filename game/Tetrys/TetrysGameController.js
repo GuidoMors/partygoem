@@ -90,7 +90,7 @@ class TetrysGameController extends CommonGameController{
 	}
 
 	defineServerListenersFor(socket){
-		socket.on(this.gameType+"_startGame"+this.gameId, () => this.startGame() );
+		// socket.on(this.gameType+"_startGame"+this.gameId, () => this.startGame() );
 		//socket.on(this.gameType+"_finishGame"+this.gameId, () => this.finishGame() );
 		socket.on(this.gameType+"_requestGameState", socketId => this.giveGameStateToSocket(socketId) );
 		socket.on(this.gameType+"_requestGameSettings"+this.gameId, socketId => this.giveGameSettingsToSocket(socketId) );
@@ -102,14 +102,15 @@ class TetrysGameController extends CommonGameController{
 	}
 	
 	deleteListeners(){
-		this.io.removeAllListeners([this.gameType+"_startGame"+this.gameId]);
+		//this.io.removeAllListeners([this.gameType+"_startGame"+this.gameId]);
 		//this.io.removeAllListeners([this.gameType+"_finishGame"+this.gameId]);
 		this.io.removeAllListeners([this.gameType+"_requestGameState"]);
 		this.io.removeAllListeners([this.gameType+"_requestGameSettings"+this.gameId]);
+		this.io.removeAllListeners([this.gameType+"_requestIntermediateGameState"+this.gameId]);
 		this.io.removeAllListeners([this.gameType+"_attemptPauseAction"+this.gameId]);
 		this.io.removeAllListeners([this.gameType+"_updatePlayerMovement"+this.gameId]);
 		this.io.removeAllListeners([this.gameType+"_attemptPlayerAction"+this.gameId]);
-		this.io.removeAllListeners([this.gameType+"_setMeAsController"+this.gameId]);
+		//this.io.removeAllListeners([this.gameType+"_setMeAsController"+this.gameId]);
 	}
 	
 	deleteYourself(){
@@ -273,31 +274,31 @@ class TetrysGameController extends CommonGameController{
 		
 	}
 
-	doOnStartGame(){
-		this.initTiles();
+	// doOnStartGame(){
+	// 	this.initTiles();
         
-		this.initMap();
-		this.gameState.players=this.playerHandler.getPlayersOrderedByTeam();
-		this.initializeStatistics();
+	// 	this.initMap();
+	// 	this.gameState.players=this.playerHandler.getPlayersOrderedByTeam();
+	// 	this.initializeStatistics();
 		
-		for(var i=0;i<this.gameState.players.length;i++){
-			var userId=this.gameState.players[i].userId;
-			this.gameState.players[i].playerNumber=i;	
-			this.gameState.players[i].movement={up: false, down: false, left: false, right: false};
-			this.gameState.players[i].startingPos={};
-			this.gameState.players[i].startingPos.x=(this.gameSettings.colsPerPlayer*(i))+(Math.floor((this.gameSettings.colsPerPlayer-4)/2))+1;
-			this.gameState.players[i].startingPos.y=1;
-			this.gameState.players[i].movementDelay=0;
-			this.quickGameState.players[userId]={userId:userId, coords:[], direction:0};
-			this.spawnNewRandomBlockForPlayer(userId);
-			this.gameSettings.lastTicTimer=(new Date()).getTime();
+	// 	for(var i=0;i<this.gameState.players.length;i++){
+	// 		var userId=this.gameState.players[i].userId;
+	// 		this.gameState.players[i].playerNumber=i;	
+	// 		this.gameState.players[i].movement={up: false, down: false, left: false, right: false};
+	// 		this.gameState.players[i].startingPos={};
+	// 		this.gameState.players[i].startingPos.x=(this.gameSettings.colsPerPlayer*(i))+(Math.floor((this.gameSettings.colsPerPlayer-4)/2))+1;
+	// 		this.gameState.players[i].startingPos.y=1;
+	// 		this.gameState.players[i].movementDelay=0;
+	// 		this.quickGameState.players[userId]={userId:userId, coords:[], direction:0};
+	// 		this.spawnNewRandomBlockForPlayer(userId);
+	// 		this.gameSettings.lastTicTimer=(new Date()).getTime();
 			
-			this.gameState.players[i].facing={};
-			this.gameState.players[i].facing.left=false;
-			this.gameState.players[i].facing.right=false;
-		}
+	// 		this.gameState.players[i].facing={};
+	// 		this.gameState.players[i].facing.left=false;
+	// 		this.gameState.players[i].facing.right=false;
+	// 	}
 			
-	}
+	// }
 	
 	initializeStatistics(){
 		this.intermediateGameState={ gameTimer:0,gameTime:0, score:{teamScore:{}, playerScore:{}}, hash: this.hash};
@@ -944,17 +945,15 @@ STATIC PART
 
 	
 		
-	startGame(){
-		this.doOnStartGame();
-		this.lastUpdateTime = (new Date()).getTime();
-		this.gameState.isRunning=true;
-		this.initiateGameTimer();
-		this.giveGameStates();		
-		this.refreshIntermediateGameInfo();
-		this.refreshQuickGameInfo();
-		
-		
-	}
+	// startGame(){
+	// 	this.doOnStartGame();
+	// 	this.lastUpdateTime = (new Date()).getTime();
+	// 	this.gameState.isRunning=true;
+	// 	this.initiateGameTimer();
+	// 	this.giveGameStates();		
+	// 	this.refreshIntermediateGameInfo();
+	// 	this.refreshQuickGameInfo();
+	// }
 	
 	//actually deletes the game and makes it go back to lobby
 	finishGame(){
